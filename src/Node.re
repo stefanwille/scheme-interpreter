@@ -4,7 +4,6 @@ type builtinOperatorType =
 
 type node =
   | Int(int)
-  | Quote(node)
   | String(string)
   | Boolean(bool)
   | Symbol(string)

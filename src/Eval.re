@@ -9,7 +9,6 @@ let rec eval = (expression: node, environment: environment): node =>
   | String(_) => expression
   | Boolean(_) => expression
   | Symbol(name) => Environment.lookupVariableValue(environment, name)
-  | Quote(node) => node
   | BuiltinOperator(_name, _function, _type) => expression
   | List(list) => evalApplication(list, environment)
   | Nil => expression

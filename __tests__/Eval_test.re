@@ -50,9 +50,11 @@ describe("eval", () => {
     let environment: environment = newEnvironment();
 
     Expect.(
-      test("returns the unquoted list", () =>
-        expect(eval(Quote(List([Symbol("hello")])), environment))
-        |> toEqual(List([Symbol("hello")]))
+      test("returns the unquoted argument", () =>
+        expect(
+          eval(List([Symbol("quote"), Symbol("hello")]), environment),
+        )
+        |> toEqual(Symbol("hello"))
       )
     );
   });

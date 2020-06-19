@@ -29,8 +29,8 @@ describe("stringOfNode", () => {
 
   Expect.(
     test("quote", () =>
-      expect(stringOfNode(Quote(List([Symbol("define")]))))
-      |> toBe("(quote (define))")
+      expect(stringOfNode(List([Symbol("quote"), Symbol("define")])))
+      |> toBe("(quote define)")
     )
   );
 

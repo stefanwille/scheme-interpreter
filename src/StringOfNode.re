@@ -8,7 +8,6 @@ let rec stringOfNode = (node: node): string =>
   | Boolean(b) => b ? "true" : "false"
   | Symbol(name) => name
   | BuiltinOperator(name, _, _) => "<builtin:" ++ name ++ ">"
-  | Quote(node) => stringOfList(["quote", stringOfNode(node)])
   | List(list) => stringOfNodeList(list)
   | Nil => "nil"
   }

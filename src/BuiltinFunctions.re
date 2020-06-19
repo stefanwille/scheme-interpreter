@@ -71,3 +71,12 @@ let setFunc: operatorFunction =
     | _ => raise(ArgumentsError("Exactly 2 arguments expected"))
     };
   };
+
+let quote: operatorFunction =
+  (argumentList: list(node), _environment) => {
+    let length = List.length(argumentList);
+    if (length !== 1) {
+      raise(ArgumentsError("exactly 1 argument is required"));
+    };
+    List.hd(argumentList);
+  };
