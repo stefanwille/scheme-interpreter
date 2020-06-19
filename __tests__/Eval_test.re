@@ -89,6 +89,27 @@ describe("eval", () => {
       )
     );
   });
+
+  describe("with if", () => {
+    let environment: environment = Environment.newEnvironment();
+
+    Expect.(
+      test("handles the 'true' case", () =>
+        expect(
+          eval(
+            List([
+              Symbol("if"),
+              Boolean(true),
+              String("Yes"),
+              String("No"),
+            ]),
+            environment,
+          ),
+        )
+        |> toEqual(String("Yes"))
+      )
+    );
+  });
 });
 
 describe("Expect", () => {

@@ -7,6 +7,7 @@ type node =
   | Assignment(string, node)
   | Sequence(list(node))
   | BuiltinFunction(string, operatorFunction)
+  | SpecialForm(string, operatorFunction)
   | List(list(node))
   | Nil
 

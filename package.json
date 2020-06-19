@@ -1,5 +1,5 @@
 {
-  "name": "my-new-project",
+  "name": "scheme-interpreter",
   "version": "0.1.0",
   "scripts": {
     "build": "bsb -make-world",
@@ -7,7 +7,7 @@
     "clean": "bsb -clean-world"
   },
   "keywords": [
-    "BuckleScript"
+    "ReasonML, SICP, Abelson/Sussman, Scheme"
   ],
   "author": "",
   "license": "MIT",

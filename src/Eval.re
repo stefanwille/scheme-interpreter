@@ -15,7 +15,7 @@ let rec eval = (expression: node, environment: environment): node =>
   | Sequence(list) => evalSequence(list, environment)
   | Quote(node) => node
   | BuiltinFunction(_name, _function) => expression
-  // TODO
+  | SpecialForm(_name, _function) => expression
   | List(list) => evalApplication(list, environment)
   | Nil => expression
   }
@@ -40,13 +40,8 @@ and evalSequence = (list: list(node), environment: environment): node => {
 and evalApplication = (list: list(node), environment: environment): node =>
   switch (list) {
   | [] => raise(ArgumentsError("Missing operator"))
-  | [operatorExpression, ...argumentExpressionList] =>
+  | [operatorExpression, ...argumentList] =>
     let operator = eval(operatorExpression, environment);
-    let argumentList: list(node) =
-      List.map(
-        argumentExpression => eval(argumentExpression, environment),
-        argumentExpressionList,
-      );
     apply(operator, argumentList, environment);
   }
 
@@ -55,6 +50,10 @@ and apply =
     : node =>
   switch (operator) {
   | BuiltinFunction(_name, operatorFunction) =>
+    let evaluatedArgumentList =
+      List.map(argument => eval(argument, environment), argumentList);
+    operatorFunction(evaluatedArgumentList, environment);
+  | SpecialForm(_name, operatorFunction) =>
     operatorFunction(argumentList, environment)
   | _ =>
     Js.log("Got: " ++ stringOfNode(operator));
