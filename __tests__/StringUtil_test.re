@@ -11,7 +11,7 @@ describe("join()", () => {
 describe("stringOfList()", () => {
   Expect.(
     test("joins a list of strings", () =>
-      expect(StringUtil.stringOfList(["a", "b", "c"])) |> toBe("(a b c")
+      expect(StringUtil.stringOfList(["a", "b", "c"])) |> toBe("(a b c)")
     )
   )
 });
