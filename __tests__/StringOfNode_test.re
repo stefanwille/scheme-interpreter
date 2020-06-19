@@ -39,6 +39,17 @@ describe("stringOfNode", () => {
           ));
 
   Expect.(
+    test("builtin function", () =>
+      expect(
+        stringOfNode(
+          BuiltinOperator("plus", BuiltinFunctions.plus, Function),
+        ),
+      )
+      |> toBe("<#plus>")
+    )
+  );
+
+  Expect.(
     test("application", () => {
       let input =
         Quote(

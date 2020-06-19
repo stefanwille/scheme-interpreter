@@ -1,7 +1,7 @@
 open Node;
 open ArgumentsError;
 
-exception NotAProducedure;
+exception NotAnOperator;
 
 let rec eval = (expression: node, environment: environment): node =>
   switch (expression) {
@@ -54,7 +54,7 @@ and apply =
       argumentList,
       environment,
     )
-  | _ => raise(NotAProducedure)
+  | _ => raise(NotAnOperator)
   }
 
 and applyBuiltinOperator =
