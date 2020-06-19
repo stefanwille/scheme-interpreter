@@ -8,7 +8,6 @@ type node =
   | String(string)
   | Boolean(bool)
   | Symbol(string)
-  | Assignment(string, node)
   | BuiltinOperator(string, operatorFunction, builtinOperatorType)
   | List(list(node))
   | Nil

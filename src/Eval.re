@@ -9,20 +9,11 @@ let rec eval = (expression: node, environment: environment): node =>
   | String(_) => expression
   | Boolean(_) => expression
   | Symbol(name) => Environment.lookupVariableValue(environment, name)
-  | Assignment(name, valueExpression) =>
-    evalAssignment(name, valueExpression, environment)
   | Quote(node) => node
   | BuiltinOperator(_name, _function, _type) => expression
   | List(list) => evalApplication(list, environment)
   | Nil => expression
   }
-
-and evalAssignment =
-    (name: string, valueExpression: node, environment: environment): node => {
-  let value = eval(valueExpression, environment);
-  Js.Dict.set(environment.frame, name, value);
-  String("OK");
-}
 
 and evalApplication = (list: list(node), environment: environment): node =>
   switch (list) {

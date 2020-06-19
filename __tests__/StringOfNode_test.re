@@ -54,7 +54,7 @@ describe("stringOfNode", () => {
       let input =
         Quote(
           List([
-            Assignment("counter", Int(0)),
+            List([Symbol("set!"), Symbol("counter"), Int(0)]),
             List([Symbol("begin"), Int(1), Int(2)]),
           ]),
         );
