@@ -51,3 +51,12 @@ let ifFunc: operatorFunction =
       )
     };
   };
+
+let beginFunc: operatorFunction =
+  (argumentList: list(node), _environment) => {
+    let length = List.length(argumentList);
+    if (length === 0) {
+      raise(ArgumentsError("at least one argument is required"));
+    };
+    List.nth(argumentList, length - 1);
+  };

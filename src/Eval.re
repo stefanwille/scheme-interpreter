@@ -11,7 +11,6 @@ let rec eval = (expression: node, environment: environment): node =>
   | Symbol(name) => Environment.lookupVariableValue(environment, name)
   | Assignment(name, valueExpression) =>
     evalAssignment(name, valueExpression, environment)
-  | Sequence(list) => evalSequence(list, environment)
   | Quote(node) => node
   | BuiltinOperator(_name, _function, _type) => expression
   | List(list) => evalApplication(list, environment)
