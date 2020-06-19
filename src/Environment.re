@@ -31,7 +31,6 @@ let defineBuiltinFunction =
 
 let newEnvironment = (): environment => {
   let env: environment = {frame: Js.Dict.empty(), parent: None};
-  setVariableValue(env, "name", Int(123));
   defineBuiltinFunction(env, "head", BuiltinFunctions.head);
   env;
 };
