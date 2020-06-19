@@ -60,3 +60,14 @@ let beginFunc: operatorFunction =
     };
     List.nth(argumentList, length - 1);
   };
+
+let setFunc: operatorFunction =
+  (argumentList: list(node), environment) => {
+    switch (argumentList) {
+    | [Symbol(name), valueExpression] =>
+      let value = eval(valueExpression, environment);
+      Environment.setVariableValue(environment, name, value);
+      String("OK");
+    | _ => raise(ArgumentsError("Exactly 2 arguments expected"))
+    };
+  };

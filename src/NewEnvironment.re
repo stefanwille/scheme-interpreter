@@ -21,6 +21,7 @@ let newEnvironment = (): environment => {
   defineBuiltinOperator(env, "+", BuiltinFunctions.plus, Function);
   defineBuiltinOperator(env, "if", BuiltinFunctions.ifFunc, SpecialForm);
   defineBuiltinOperator(env, "begin", BuiltinFunctions.beginFunc, Function);
+  defineBuiltinOperator(env, "set!", BuiltinFunctions.setFunc, SpecialForm);
 
   env;
 };
