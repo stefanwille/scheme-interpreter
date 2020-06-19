@@ -56,6 +56,16 @@ describe("eval", () => {
       )
     );
   });
+
+  describe("with nil", () => {
+    let environment: environment = Environment.newEnvironment();
+
+    Expect.(
+      test("returns the same expression", () =>
+        expect(eval(Nil, environment)) |> toEqual(Nil)
+      )
+    );
+  });
 });
 
 // let input =
