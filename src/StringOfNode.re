@@ -11,7 +11,7 @@ let rec stringOfNode = (node: node): string =>
     stringOfList(["set!", name, stringOfNode(valueExpression)])
   | Sequence(list) =>
     stringOfList(["begin", ...List.map(stringOfNode, list)])
-  | BuiltinOperator(name, _, _) => "<#" ++ name ++ ">"
+  | BuiltinOperator(name, _, _) => "<builtin:" ++ name ++ ">"
   | Quote(node) => stringOfList(["quote", stringOfNode(node)])
   | List(list) => stringOfNodeList(list)
   | Nil => "nil"

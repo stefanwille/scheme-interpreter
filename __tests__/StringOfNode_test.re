@@ -45,7 +45,7 @@ describe("stringOfNode", () => {
           BuiltinOperator("plus", BuiltinFunctions.plus, Function),
         ),
       )
-      |> toBe("<#plus>")
+      |> toBe("<builtin:plus>")
     )
   );
 
