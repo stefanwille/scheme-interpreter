@@ -1,43 +1,23 @@
-type node =
-  | Int(int)
-  | Quote(node)
-  | String(string)
-  | Boolean(bool)
-  | Symbol(string)
-  | Assignment(string, node)
-  | Sequence(list(node))
-  | List(list(node))
-  | Nil;
+open Node;
+open StringOfNode;
 
-type environment = {
-  frame: Js.Dict.t(node),
-  parent: option(environment),
-};
 
-let rec lookupVariableValue = (environment: environment, name: string): node => {
-  let value = Js.Dict.get(environment.frame, name);
-  switch (value) {
-  | Some(node) => node
-  | None =>
-    switch (environment.parent) {
-    | Some(parent) => lookupVariableValue(parent, name)
-    | None => raise(Not_found)
-    }
-  };
-};
+exception NotAProducedure;
+exception ArgumentsError(string);
 
 let rec eval = (expression: node, environment: environment): node =>
   switch (expression) {
   | Int(_) => expression
   | String(_) => expression
   | Boolean(_) => expression
-  | Symbol(name) => lookupVariableValue(environment, name)
+  | Symbol(name) => Environment.lookupVariableValue(environment, name)
   | Assignment(name, valueExpression) =>
     evalAssignment(name, valueExpression, environment)
   | Sequence(list) => evalSequence(list, environment)
   | Quote(node) => node
+  | BuiltinFunction(_name, _function) => expression
   // TODO
-  | List(_) => expression
+  | List(list) => evalApplication(list, environment)
   | Nil => expression
   }
 
@@ -56,44 +36,48 @@ and evalSequence = (list: list(node), environment: environment): node => {
     let _ = eval(firstExpression, environment);
     evalSequence(rest, environment);
   };
-};
+}
+
+and evalApplication = (list: list(node), environment: environment): node =>
+  switch (list) {
+  | [] => raise(ArgumentsError("Missing operator"))
+  | [operatorExpression, ...argumentExpressionList] =>
+    let operator = eval(operatorExpression, environment);
+    let argumentList =
+      List.map(
+        argumentExpression => eval(argumentExpression, environment),
+        argumentExpressionList,
+      );
+    Js.log("evalApplication " ++ stringOfNode(operator));
+    apply(operator, argumentList, environment);
+  }
+
+and apply =
+    (operator: node, argumentList: list(node), environment: environment)
+    : node =>
+  switch (operator) {
+  | BuiltinFunction(_name, operatorFunction) =>
+    operatorFunction(argumentList, environment)
+  | _ =>
+    Js.log("Got: " ++ stringOfNode(operator));
+    raise(NotAProducedure);
+  };
+
+let builtinFunctionHead: operatorFunction =
+  (argumentList, _environment) =>
+    switch (argumentList) {
+    | [] => raise(ArgumentsError("Missing list"))
+    | [List(list)] => List.hd(list)
+    | _ => raise(ArgumentsError("Too many arguments"))
+    };
 
 let myEnvironment: environment = {frame: Js.Dict.empty(), parent: None};
 Js.Dict.set(myEnvironment.frame, "name", Int(123));
-
-let join = (list: list(string), separator) =>
-  List.fold_left(
-    (sum: string, s: string) =>
-      switch (sum) {
-      | "" => s
-      | _ => sum ++ separator ++ s
-      },
-    "",
-    list,
-  );
-
-let stringOfList = (list: list(string)): string => {
-  let joined = join(list, " ");
-  "(" ++ joined ++ ")";
-};
-
-let rec stringOfNode = (node: node): string =>
-  switch (node) {
-  | Int((i: int)) => string_of_int(i)
-  | String(s) => "\"" ++ s ++ "\""
-  | Boolean(b) => b ? "true" : "false"
-  | Symbol(name) => name
-  | Assignment(name, valueExpression) =>
-    stringOfList(["set!", name, stringOfNode(valueExpression)])
-  | Sequence(list) =>
-    stringOfList(["begin", ...List.map(stringOfNode, list)])
-  | Quote(node) => stringOfList(["quote", stringOfNode(node)])
-  | List(list) => stringOfNodeList(list)
-  | Nil => "nil"
-  }
-
-and stringOfNodeList = (list: list(node)): string =>
-  stringOfList(List.map(stringOfNode, list));
+Js.Dict.set(
+  myEnvironment.frame,
+  "head",
+  BuiltinFunction("head", builtinFunctionHead),
+);
 
 let input =
   Quote(
@@ -108,17 +92,11 @@ let input =
       Sequence([Int(1), Int(2)]),
       Nil,
     ]),
-  );
-Js.log("input: " ++ stringOfNode(input));
-Js.log("Eval: " ++ stringOfNode(eval(input, myEnvironment)));
-Js.log(
-  "Eval: "
-  ++ stringOfNode(eval(Assignment("counter", Int(3)), myEnvironment)),
-);
-Js.log(
-  "Eval: "
-  ++ stringOfNode(eval(Sequence([Int(2), Int(3)]), myEnvironment)),
-);
-Js.log(
-  "Eval: " ++ stringOfNode(eval(Quote(Quote(List([]))), myEnvironment)),
-);
+  ) /* Js.log("Eval: " ++ stringOfNode(evaledApply))*/ /*   "Eval: */ /* )*/ /*   "Eval: " ++ stringOfNode(eval(Quote(Quote(List([]))), myEnvironment))*/ /* let evaledApply */ /*     List([Symbol("head"), String("one"), String("two")])*/ /*   )*/ /*     myEnvironment*/ /*   eval*/ /* )*/ /* Js.log*/ /*   ++ stringOfNode(eval(Sequence([Int(2), Int(3)]), myEnvironment))*/;
+// Js.log("input: " ++ stringOfNode(input));
+// Js.log("Eval: " ++ stringOfNode(eval(input, myEnvironment)));
+// Js.log(
+//   "Eval: "
+//   ++ stringOfNode(eval(Assignment("counter", Int(3)), myEnvironment)),
+// );
+// Js.log(
