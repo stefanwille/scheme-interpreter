@@ -47,7 +47,6 @@ and evalApplication = (list: list(node), environment: environment): node =>
         argumentExpression => eval(argumentExpression, environment),
         argumentExpressionList,
       );
-    Js.log("evalApplication " ++ stringOfNode(operator));
     apply(operator, argumentList, environment);
   }
 
