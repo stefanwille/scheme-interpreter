@@ -1,5 +1,4 @@
 open Node;
-open StringOfNode;
 open ArgumentsError;
 
 exception NotAProducedure;
@@ -14,8 +13,7 @@ let rec eval = (expression: node, environment: environment): node =>
     evalAssignment(name, valueExpression, environment)
   | Sequence(list) => evalSequence(list, environment)
   | Quote(node) => node
-  | BuiltinFunction(_name, _function) => expression
-  | SpecialForm(_name, _function) => expression
+  | BuiltinOperator(_name, _function, _type) => expression
   | List(list) => evalApplication(list, environment)
   | Nil => expression
   }
@@ -49,30 +47,30 @@ and apply =
     (operator: node, argumentList: list(node), environment: environment)
     : node =>
   switch (operator) {
-  | BuiltinFunction(_name, operatorFunction) =>
-    applyBuiltinFunction(operatorFunction, argumentList, environment)
-  | SpecialForm(_name, operatorFunction) =>
-    applySpecialForm(operatorFunction, argumentList, environment)
+  | BuiltinOperator(_name, operatorFunction, operatorType) =>
+    applyBuiltinOperator(
+      operatorFunction,
+      operatorType,
+      argumentList,
+      environment,
+    )
   | _ => raise(NotAProducedure)
   }
 
-and applyBuiltinFunction =
+and applyBuiltinOperator =
     (
       operatorFunction: operatorFunction,
+      operatorType: builtinOperatorType,
       argumentList: list(node),
       environment: environment,
     )
     : node => {
-  let evaluatedArgumentList =
-    List.map(argument => eval(argument, environment), argumentList);
-  operatorFunction(evaluatedArgumentList, environment);
-}
+  let usedArgumentList =
+    switch (operatorType) {
+    | Function =>
+      List.map(argument => eval(argument, environment), argumentList)
+    | SpecialForm => argumentList
+    };
 
-and applySpecialForm =
-    (
-      operatorFunction: operatorFunction,
-      argumentList: list(node),
-      environment: environment,
-    )
-    : node =>
-  operatorFunction(argumentList, environment);
+  operatorFunction(usedArgumentList, environment);
+};

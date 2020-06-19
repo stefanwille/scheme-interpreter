@@ -109,20 +109,22 @@ describe("eval", () => {
         |> toEqual(String("Yes"))
       )
     );
+
+    Expect.(
+      test("handles the 'false' case", () =>
+        expect(
+          eval(
+            List([
+              Symbol("if"),
+              Boolean(false),
+              String("Yes"),
+              String("No"),
+            ]),
+            environment,
+          ),
+        )
+        |> toEqual(String("No"))
+      )
+    );
   });
-});
-
-describe("Expect", () => {
-  Expect.(test("toBe", () =>
-            expect(1 + 2) |> toBe(3)
-          ))
-});
-
-describe("Expect.Operators", () => {
-  open Expect;
-  open! Expect.Operators;
-
-  test("==", () =>
-    expect(1 + 2) === 3
-  );
 });

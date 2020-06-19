@@ -1,3 +1,7 @@
+type builtinOperatorType =
+  | Function
+  | SpecialForm;
+
 type node =
   | Int(int)
   | Quote(node)
@@ -6,8 +10,7 @@ type node =
   | Symbol(string)
   | Assignment(string, node)
   | Sequence(list(node))
-  | BuiltinFunction(string, operatorFunction)
-  | SpecialForm(string, operatorFunction)
+  | BuiltinOperator(string, operatorFunction, builtinOperatorType)
   | List(list(node))
   | Nil
 
