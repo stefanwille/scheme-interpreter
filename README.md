@@ -7,14 +7,12 @@ I am writing this code as an exercise to learn ReasonML.
 ## Build
 
 ```bash
-# for yarn
 yarn build
 ```
 
 ## Build + Watch
 
 ```bash
-# for yarn
 yarn start
 
 ```
