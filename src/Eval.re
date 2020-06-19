@@ -50,12 +50,29 @@ and apply =
     : node =>
   switch (operator) {
   | BuiltinFunction(_name, operatorFunction) =>
-    let evaluatedArgumentList =
-      List.map(argument => eval(argument, environment), argumentList);
-    operatorFunction(evaluatedArgumentList, environment);
+    applyBuiltinFunction(operatorFunction, argumentList, environment)
   | SpecialForm(_name, operatorFunction) =>
-    operatorFunction(argumentList, environment)
-  | _ =>
-    Js.log("Got: " ++ stringOfNode(operator));
-    raise(NotAProducedure);
-  };
+    applySpecialForm(operatorFunction, argumentList, environment)
+  | _ => raise(NotAProducedure)
+  }
+
+and applyBuiltinFunction =
+    (
+      operatorFunction: operatorFunction,
+      argumentList: list(node),
+      environment: environment,
+    )
+    : node => {
+  let evaluatedArgumentList =
+    List.map(argument => eval(argument, environment), argumentList);
+  operatorFunction(evaluatedArgumentList, environment);
+}
+
+and applySpecialForm =
+    (
+      operatorFunction: operatorFunction,
+      argumentList: list(node),
+      environment: environment,
+    )
+    : node =>
+  operatorFunction(argumentList, environment);
