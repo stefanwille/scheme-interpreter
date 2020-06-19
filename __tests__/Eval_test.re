@@ -1,11 +1,11 @@
 open Jest;
 open Node;
 open Eval;
-open Environment;
+open NewEnvironment;
 
 describe("eval", () => {
   describe("with an int", () => {
-    let environment: environment = Environment.newEnvironment();
+    let environment: environment = newEnvironment();
 
     Expect.(
       test("returns the same expression", () =>
@@ -15,7 +15,7 @@ describe("eval", () => {
   });
 
   describe("with a string", () => {
-    let environment: environment = Environment.newEnvironment();
+    let environment: environment = newEnvironment();
 
     Expect.(
       test("returns the same expression", () =>
@@ -26,7 +26,7 @@ describe("eval", () => {
   });
 
   describe("with a boolean", () => {
-    let environment: environment = Environment.newEnvironment();
+    let environment: environment = newEnvironment();
 
     Expect.(
       test("returns the same expression", () =>
@@ -36,8 +36,8 @@ describe("eval", () => {
   });
 
   describe("with a variable (= symbol)", () => {
-    let environment: environment = Environment.newEnvironment();
-    setVariableValue(environment, "size", Int(123));
+    let environment: environment = newEnvironment();
+    Environment.setVariableValue(environment, "size", Int(123));
 
     Expect.(
       test("returns the variable's value", () =>
@@ -47,7 +47,7 @@ describe("eval", () => {
   });
 
   describe("with a quote", () => {
-    let environment: environment = Environment.newEnvironment();
+    let environment: environment = newEnvironment();
 
     Expect.(
       test("returns the unquoted list", () =>
@@ -58,7 +58,7 @@ describe("eval", () => {
   });
 
   describe("with nil", () => {
-    let environment: environment = Environment.newEnvironment();
+    let environment: environment = newEnvironment();
 
     Expect.(
       test("returns the same expression", () =>
@@ -68,7 +68,7 @@ describe("eval", () => {
   });
 
   describe("with +", () => {
-    let environment: environment = Environment.newEnvironment();
+    let environment: environment = newEnvironment();
 
     Expect.(
       test("returns the sum", () =>
@@ -91,7 +91,7 @@ describe("eval", () => {
   });
 
   describe("with if", () => {
-    let environment: environment = Environment.newEnvironment();
+    let environment: environment = newEnvironment();
 
     Expect.(
       test("handles the 'true' case", () =>
