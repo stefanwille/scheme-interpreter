@@ -9,7 +9,6 @@ type node =
   | Boolean(bool)
   | Symbol(string)
   | Assignment(string, node)
-  | Sequence(list(node))
   | BuiltinOperator(string, operatorFunction, builtinOperatorType)
   | List(list(node))
   | Nil

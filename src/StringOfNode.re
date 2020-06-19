@@ -9,8 +9,6 @@ let rec stringOfNode = (node: node): string =>
   | Symbol(name) => name
   | Assignment(name, valueExpression) =>
     stringOfList(["set!", name, stringOfNode(valueExpression)])
-  | Sequence(list) =>
-    stringOfList(["begin", ...List.map(stringOfNode, list)])
   | BuiltinOperator(name, _, _) => "<builtin:" ++ name ++ ">"
   | Quote(node) => stringOfList(["quote", stringOfNode(node)])
   | List(list) => stringOfNodeList(list)

@@ -24,16 +24,6 @@ and evalAssignment =
   String("OK");
 }
 
-and evalSequence = (list: list(node), environment: environment): node => {
-  switch (list) {
-  | [] => Nil
-  | [lastExpression] => eval(lastExpression, environment)
-  | [firstExpression, ...rest] =>
-    let _ = eval(firstExpression, environment);
-    evalSequence(rest, environment);
-  };
-}
-
 and evalApplication = (list: list(node), environment: environment): node =>
   switch (list) {
   | [] => raise(ArgumentsError("Missing operator"))

@@ -55,7 +55,7 @@ describe("stringOfNode", () => {
         Quote(
           List([
             Assignment("counter", Int(0)),
-            Sequence([Int(1), Int(2)]),
+            List([Symbol("begin"), Int(1), Int(2)]),
           ]),
         );
 
