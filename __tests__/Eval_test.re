@@ -66,22 +66,18 @@ describe("eval", () => {
       )
     );
   });
-});
 
-// let input =
-//   Quote(
-//     List([
-//       Assignment("counter", Int(0)),
-//       Sequence([Int(1), Int(2)]),
-//     ]),
-//   ) /* Js.log("Eval: " ++ stringOfNode(evaledApply))*/ /*   "Eval: */ /* )*/ /*   "Eval: " ++ stringOfNode(eval(Quote(Quote(List([]))), myEnvironment))*/ /* let evaledApply */ /*     List([Symbol("head"), String("one"), String("two")])*/ /*   )*/ /*     myEnvironment*/ /*   eval*/ /* )*/ /* Js.log*/ /*   ++ stringOfNode(eval(Sequence([Int(2), Int(3)]), myEnvironment))*/;
-// Js.log("input: " ++ stringOfNode(input));
-// Js.log("Eval: " ++ stringOfNode(eval(input, myEnvironment)));
-// Js.log(
-//   "Eval: "
-//   ++ stringOfNode(eval(Assignment("counter", Int(3)), myEnvironment)),
-// );
-// Js.log(
+  describe("with +", () => {
+    let environment: environment = Environment.newEnvironment();
+
+    Expect.(
+      test("returns the sum", () =>
+        expect(eval(List([Symbol("+"), Int(1), Int(2)]), environment))
+        |> toEqual(Int(3))
+      )
+    );
+  });
+});
 
 describe("Expect", () => {
   Expect.(test("toBe", () =>

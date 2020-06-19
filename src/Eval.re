@@ -42,7 +42,7 @@ and evalApplication = (list: list(node), environment: environment): node =>
   | [] => raise(ArgumentsError("Missing operator"))
   | [operatorExpression, ...argumentExpressionList] =>
     let operator = eval(operatorExpression, environment);
-    let argumentList =
+    let argumentList: list(node) =
       List.map(
         argumentExpression => eval(argumentExpression, environment),
         argumentExpressionList,

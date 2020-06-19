@@ -37,4 +37,19 @@ describe("stringOfNode", () => {
   Expect.(test("nil", () =>
             expect(stringOfNode(Nil)) |> toBe("nil")
           ));
+
+  Expect.(
+    test("application", () => {
+      let input =
+        Quote(
+          List([
+            Assignment("counter", Int(0)),
+            Sequence([Int(1), Int(2)]),
+          ]),
+        );
+
+      expect(stringOfNode(input))
+      |> toBe("(quote ((set! counter 0) (begin 1 2)))");
+    })
+  );
 });

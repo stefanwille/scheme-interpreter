@@ -1,4 +1,5 @@
 open Node;
+open NotFoundError;
 
 let rec lookupVariableValue = (environment: environment, name: string): node => {
   let value = Js.Dict.get(environment.frame, name);
@@ -7,7 +8,7 @@ let rec lookupVariableValue = (environment: environment, name: string): node => 
   | None =>
     switch (environment.parent) {
     | Some(parent) => lookupVariableValue(parent, name)
-    | None => raise(Not_found)
+    | None => raise(NotFoundError(name))
     }
   };
 };
@@ -32,5 +33,7 @@ let defineBuiltinFunction =
 let newEnvironment = (): environment => {
   let env: environment = {frame: Js.Dict.empty(), parent: None};
   defineBuiltinFunction(env, "head", BuiltinFunctions.head);
+  defineBuiltinFunction(env, "+", BuiltinFunctions.plus);
+
   env;
 };
