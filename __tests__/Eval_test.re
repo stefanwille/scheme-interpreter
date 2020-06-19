@@ -71,15 +71,8 @@ describe("eval", () => {
 // let input =
 //   Quote(
 //     List([
-//       Int(123),
-//       String("Hello!"),
-//       Boolean(true),
-//       Quote(String("Hello")),
-//       List([]),
-//       Symbol("name"),
 //       Assignment("counter", Int(0)),
 //       Sequence([Int(1), Int(2)]),
-//       Nil,
 //     ]),
 //   ) /* Js.log("Eval: " ++ stringOfNode(evaledApply))*/ /*   "Eval: */ /* )*/ /*   "Eval: " ++ stringOfNode(eval(Quote(Quote(List([]))), myEnvironment))*/ /* let evaledApply */ /*     List([Symbol("head"), String("one"), String("two")])*/ /*   )*/ /*     myEnvironment*/ /*   eval*/ /* )*/ /* Js.log*/ /*   ++ stringOfNode(eval(Sequence([Int(2), Int(3)]), myEnvironment))*/;
 // Js.log("input: " ++ stringOfNode(input));
