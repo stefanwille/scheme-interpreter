@@ -52,15 +52,18 @@ describe("stringOfNode", () => {
   Expect.(
     test("application", () => {
       let input =
-        Quote(
+        List([
+          Symbol("begin"),
+          List([Symbol("set!"), Symbol("counter"), Int(0)]),
           List([
-            List([Symbol("set!"), Symbol("counter"), Int(0)]),
-            List([Symbol("begin"), Int(1), Int(2)]),
+            Symbol("set!"),
+            Symbol("counter"),
+            List([Symbol("+"), Symbol("counter"), Int(1)]),
           ]),
-        );
+        ]);
 
       expect(stringOfNode(input))
-      |> toBe("(quote ((set! counter 0) (begin 1 2)))");
+      |> toBe("(begin (set! counter 0) (set! counter (+ counter 1)))");
     })
   );
 });
