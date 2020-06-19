@@ -1,62 +1,124 @@
-type nodeType =
+type node =
   | Int(int)
+  | Quote(node)
   | String(string)
-  | Variable(string)
-  | List(list(nodeType))
+  | Boolean(bool)
+  | Symbol(string)
+  | Assignment(string, node)
+  | Sequence(list(node))
+  | List(list(node))
   | Nil;
 
 type environment = {
-  frame: Js.Dict.t(nodeType),
+  frame: Js.Dict.t(node),
   parent: option(environment),
 };
 
-let rec environmentLookup = (environment: environment, name: string): nodeType => {
+let rec lookupVariableValue = (environment: environment, name: string): node => {
   let value = Js.Dict.get(environment.frame, name);
   switch (value) {
   | Some(node) => node
   | None =>
     switch (environment.parent) {
-    | Some(parent) => environmentLookup(parent, name)
+    | Some(parent) => lookupVariableValue(parent, name)
     | None => raise(Not_found)
     }
   };
 };
 
-let eval = (expression, environment): nodeType =>
+let rec eval = (expression: node, environment: environment): node =>
   switch (expression) {
   | Int(_) => expression
   | String(_) => expression
-  | List(l) => expression
+  | Boolean(_) => expression
+  | Symbol(name) => lookupVariableValue(environment, name)
+  | Assignment(name, valueExpression) =>
+    evalAssignment(name, valueExpression, environment)
+  | Sequence(list) => evalSequence(list, environment)
+  | Quote(node) => node
+  // TODO
+  | List(_) => expression
   | Nil => expression
-  | Variable(name) => environmentLookup(environment, name)
+  }
+
+and evalAssignment =
+    (name: string, valueExpression: node, environment: environment): node => {
+  let value = eval(valueExpression, environment);
+  Js.Dict.set(environment.frame, name, value);
+  String("OK");
+}
+
+and evalSequence = (list: list(node), environment: environment): node => {
+  switch (list) {
+  | [] => Nil
+  | [lastExpression] => eval(lastExpression, environment)
+  | [firstExpression, ...rest] =>
+    let _ = eval(firstExpression, environment);
+    evalSequence(rest, environment);
   };
+};
 
 let myEnvironment: environment = {frame: Js.Dict.empty(), parent: None};
 Js.Dict.set(myEnvironment.frame, "name", Int(123));
 
-let join = (list: list(string)) =>
+let join = (list: list(string), separator) =>
   List.fold_left(
-    (current: string, s: string) =>
-      switch (current) {
+    (sum: string, s: string) =>
+      switch (sum) {
       | "" => s
-      | _ => current ++ ", " ++ s
+      | _ => sum ++ separator ++ s
       },
     "",
     list,
   );
 
-let rec toString = (node: nodeType): string =>
-  switch (node) {
-  | Int(i) => string_of_int(i)
-  | String(s) => s
-  | List(l) => "(" ++ join(List.map(toString, l)) ++ ")"
-  | Variable(v) => v
-  | Nil => "nil"
-  };
+let stringOfList = (list: list(string)): string => {
+  let joined = join(list, " ");
+  "(" ++ joined ++ ")";
+};
 
-let result =
-  eval(
-    List([Int(123), String("Hello"), List([]), Variable("name"), Nil]),
-    myEnvironment,
+let rec stringOfNode = (node: node): string =>
+  switch (node) {
+  | Int((i: int)) => string_of_int(i)
+  | String(s) => "\"" ++ s ++ "\""
+  | Boolean(b) => b ? "true" : "false"
+  | Symbol(name) => name
+  | Assignment(name, valueExpression) =>
+    stringOfList(["set!", name, stringOfNode(valueExpression)])
+  | Sequence(list) =>
+    stringOfList(["begin", ...List.map(stringOfNode, list)])
+  | Quote(node) => stringOfList(["quote", stringOfNode(node)])
+  | List(list) => stringOfNodeList(list)
+  | Nil => "nil"
+  }
+
+and stringOfNodeList = (list: list(node)): string =>
+  stringOfList(List.map(stringOfNode, list));
+
+let input =
+  Quote(
+    List([
+      Int(123),
+      String("Hello!"),
+      Boolean(true),
+      Quote(String("Hello")),
+      List([]),
+      Symbol("name"),
+      Assignment("counter", Int(0)),
+      Sequence([Int(1), Int(2)]),
+      Nil,
+    ]),
   );
-Js.log("Eval: " ++ toString(result));
+Js.log("input: " ++ stringOfNode(input));
+Js.log("Eval: " ++ stringOfNode(eval(input, myEnvironment)));
+Js.log(
+  "Eval: "
+  ++ stringOfNode(eval(Assignment("counter", Int(3)), myEnvironment)),
+);
+Js.log(
+  "Eval: "
+  ++ stringOfNode(eval(Sequence([Int(2), Int(3)]), myEnvironment)),
+);
+Js.log(
+  "Eval: " ++ stringOfNode(eval(Quote(Quote(List([]))), myEnvironment)),
+);
