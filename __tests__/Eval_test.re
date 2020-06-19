@@ -45,6 +45,17 @@ describe("eval", () => {
       )
     );
   });
+
+  describe("with a quote", () => {
+    let environment: environment = Environment.newEnvironment();
+
+    Expect.(
+      test("returns the unquoted list", () =>
+        expect(eval(Quote(List([Symbol("hello")])), environment))
+        |> toEqual(List([Symbol("hello")]))
+      )
+    );
+  });
 });
 
 // let input =
