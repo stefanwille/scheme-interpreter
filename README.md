@@ -1,15 +1,13 @@
-# Basic Reason Template
+# Scheme Interpreter in ReasonML
 
-Hello! This project allows you to quickly get started with Reason and BuckleScript. If you wanted a more sophisticated version, try the `react` template (`bsb -theme react -init .`).
+This is an interpreter for the Lisp like programming language Scheme, written in ReasonML. The code follows closely chapter 4 of the book "Structure and Interpretation of Computer Programs" by Abelson/Sussman.
+
 
 # Build
 
 ```bash
 # for yarn
 yarn build
-
-# for npm
-npm run build
 ```
 
 # Build + Watch
@@ -18,7 +16,4 @@ npm run build
 # for yarn
 yarn start
 
-# for npm
-npm run start
 ```
-
