@@ -84,7 +84,7 @@ let quote: operatorFunction =
     if (length !== 1) {
       raise(ArgumentsError("Expected exactly 1 argument"));
     };
-    // Quoted text:
+    // The result of "quote" is the unquoted text:
     List.nth(argumentList, 0);
   };
 
