@@ -6,9 +6,8 @@ open Eval;
 let head: operatorFunction =
   (argumentList: list(node), _environment) =>
     switch (argumentList) {
-    | [] => raise(ArgumentsError("Missing list"))
     | [List(list)] => List.hd(list)
-    | _ => raise(ArgumentsError("Too many arguments"))
+    | _ => raise(ArgumentsError("Expected exactly 1 argument"))
     };
 
 let plus: operatorFunction =
@@ -39,6 +38,7 @@ let ifFunc: operatorFunction =
   (argumentList: list(node), environment) => {
     switch (argumentList) {
     | [] => raise(ArgumentsError("Missing if condition and consequent"))
+    // TODO: if with 1 argument
     | [condition, consequent, alternative] =>
       let evaledCondition = eval(condition, environment);
       truthy(evaledCondition)
@@ -58,6 +58,7 @@ let beginFunc: operatorFunction =
     if (length === 0) {
       raise(ArgumentsError("at least one argument is required"));
     };
+    // Return the last argument as result
     List.nth(argumentList, length - 1);
   };
 
@@ -68,7 +69,7 @@ let setFunc: operatorFunction =
       let value = eval(valueExpression, environment);
       Environment.setVariableValue(environment, name, value);
       String("OK");
-    | _ => raise(ArgumentsError("Exactly 2 arguments expected"))
+    | _ => raise(ArgumentsError("Expected exactly 2 arguments"))
     };
   };
 
@@ -78,7 +79,8 @@ let quote: operatorFunction =
     if (length !== 1) {
       raise(ArgumentsError("exactly 1 argument is required"));
     };
-    List.hd(argumentList);
+    // Quoted text:
+    List.nth(argumentList, 0);
   };
 
 let lambda: operatorFunction =
@@ -94,7 +96,6 @@ let lambda: operatorFunction =
             },
           parameterList,
         );
-      // TODO: a new environment
       CompoundOperator(parameterNames, body, environment, Function);
     | _ => raise(ArgumentsError("Exactly 2 arguments expected"))
     };

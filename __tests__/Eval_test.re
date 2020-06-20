@@ -198,23 +198,46 @@ describe("eval", () => {
     );
   });
 
-  describe("with applying a lambda", () => {
-    let environment: environment = newEnvironment();
+  describe("when applying a lambda", () => {
+    describe("execevaluates the body", () => {
+      let environment: environment = newEnvironment();
 
-    Expect.(
-      test("evaluates the body in a new environment", () => {
-        let lambdaFunction =
-          eval(
-            List([
-              Symbol("lambda"),
-              List([Symbol("x")]),
-              List([Symbol("+"), Symbol("x"), Int(3)]),
-            ]),
-            environment,
-          );
-        let result = eval(List([lambdaFunction, Int(2)]), environment);
-        expect(result) |> toEqual(Int(5));
-      })
-    );
+      Expect.(
+        test("evaluates the body in a new environment", () => {
+          let lambdaFunction =
+            eval(
+              List([
+                Symbol("lambda"),
+                List([Symbol("x")]),
+                List([Symbol("+"), Symbol("x"), Int(3)]),
+              ]),
+              environment,
+            );
+          let result = eval(List([lambdaFunction, Int(2)]), environment);
+          expect(result) |> toEqual(Int(5));
+        })
+      );
+    });
+
+    describe("evaluates in a new environment", () => {
+      let environment: environment = newEnvironment();
+      Environment.defineVariable(environment, "x", Int(10));
+
+      Expect.(
+        test("evaluates the body in a new environment", () => {
+          let lambdaFunction =
+            eval(
+              List([
+                Symbol("lambda"),
+                List([Symbol("x")]),
+                List([Symbol("+"), Symbol("x"), Int(3)]),
+              ]),
+              environment,
+            );
+          let result = eval(List([lambdaFunction, Int(2)]), environment);
+          expect(result) |> toEqual(Int(5));
+        })
+      );
+    });
   });
 });
