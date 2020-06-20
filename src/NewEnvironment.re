@@ -16,13 +16,14 @@ let defineBuiltinOperator =
 };
 
 let newEnvironment = (): environment => {
-  let env: environment = {frame: Js.Dict.empty(), parent: None};
+  let env: environment = makeEnvironment();
   defineBuiltinOperator(env, "head", BuiltinFunctions.head, Function);
   defineBuiltinOperator(env, "+", BuiltinFunctions.plus, Function);
   defineBuiltinOperator(env, "if", BuiltinFunctions.ifFunc, SpecialForm);
   defineBuiltinOperator(env, "begin", BuiltinFunctions.beginFunc, Function);
   defineBuiltinOperator(env, "set!", BuiltinFunctions.setFunc, SpecialForm);
   defineBuiltinOperator(env, "quote", BuiltinFunctions.quote, SpecialForm);
+  defineBuiltinOperator(env, "lambda", BuiltinFunctions.lambda, SpecialForm);
 
   env;
 };

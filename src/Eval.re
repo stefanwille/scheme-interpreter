@@ -10,6 +10,7 @@ let rec eval = (expression: node, environment: environment): node =>
   | Boolean(_) => expression
   | Symbol(name) => Environment.lookupVariableValue(environment, name)
   | BuiltinOperator(_name, _function, _type) => expression
+  | CompoundOperator(_parameterNames, _body, _environment, _operatorType) => expression
   | List(list) => evalApplication(list, environment)
   | Nil => expression
   }
@@ -27,16 +28,16 @@ and apply =
     : node =>
   switch (operator) {
   | BuiltinOperator(_name, operatorFunction, operatorType) =>
-    applyBuiltinOperator(
-      operatorFunction,
-      operatorType,
-      argumentList,
-      environment,
-    )
+    applyOperator(operatorFunction, operatorType, argumentList, environment)
+
+  // | CompoundOperator(parameterNames, body, operatorEnvironment, operatorType) =>
+  //   let operatorFunction = Nil;
+  //   ();
+
   | _ => raise(NotAnOperator)
   }
 
-and applyBuiltinOperator =
+and applyOperator =
     (
       operatorFunction: operatorFunction,
       operatorType: builtinOperatorType,

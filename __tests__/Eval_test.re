@@ -166,4 +166,55 @@ describe("eval", () => {
       })
     );
   });
+
+  describe("with lambda", () => {
+    let environment: environment = newEnvironment();
+
+    Expect.(
+      test("returns a new compound function", () => {
+        let lambdaFunction =
+          eval(
+            List([
+              Symbol("lambda"),
+              List([Symbol("x")]),
+              List([Symbol("+"), Symbol("x"), Int(3)]),
+            ]),
+            environment,
+          );
+        // let result = eval(List([lambdaFunction, Int(2)]), environment);
+        let parameterNames =
+          switch (lambdaFunction) {
+          | CompoundOperator(
+              parameterNames,
+              _body,
+              _environment,
+              _builtinOperatorType,
+            ) => parameterNames
+          | _ => ["something else"]
+          };
+
+        expect(parameterNames) |> toEqual(["x"]);
+      })
+    );
+  });
+
+  describe("with applying a lambda", () => {
+    let environment: environment = newEnvironment();
+
+    Expect.(
+      test("evaluates the body in a new environment", () => {
+        let lambdaFunction =
+          eval(
+            List([
+              Symbol("lambda"),
+              List([Symbol("x")]),
+              List([Symbol("+"), Symbol("x"), Int(3)]),
+            ]),
+            environment,
+          );
+        let result = eval(List([lambdaFunction, Int(2)]), environment);
+        expect(result) |> toEqual(Int(5));
+      })
+    );
+  });
 });

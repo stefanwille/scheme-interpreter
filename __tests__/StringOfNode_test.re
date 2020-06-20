@@ -1,6 +1,7 @@
 open Jest;
 open Node;
 open StringOfNode;
+open NewEnvironment;
 
 describe("stringOfNode", () => {
   Expect.(
@@ -64,6 +65,20 @@ describe("stringOfNode", () => {
 
       expect(stringOfNode(input))
       |> toBe("(begin (set! counter 0) (set! counter (+ counter 1)))");
+    })
+  );
+
+  Expect.(
+    test("lambda-result", () => {
+      let input =
+        CompoundOperator(
+          ["x"],
+          List([Symbol("+"), Symbol("x"), Int(4)]),
+          newEnvironment(),
+          Function,
+        );
+
+      expect(stringOfNode(input)) |> toBe("[lambda:(x) (+ x 4)]");
     })
   );
 });

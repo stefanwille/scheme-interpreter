@@ -8,6 +8,12 @@ let rec stringOfNode = (node: node): string =>
   | Boolean(b) => b ? "true" : "false"
   | Symbol(name) => name
   | BuiltinOperator(name, _, _) => "<builtin:" ++ name ++ ">"
+  | CompoundOperator(parameterNames, body, _environment, _operatorType) =>
+    "[lambda:("
+    ++ join(parameterNames, " ")
+    ++ ") "
+    ++ stringOfNode(body)
+    ++ "]"
   | List(list) => stringOfNodeList(list)
   | Nil => "nil"
   }
