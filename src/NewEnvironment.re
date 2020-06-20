@@ -17,8 +17,9 @@ let defineBuiltinOperator =
 
 let newEnvironment = (): environment => {
   let env: environment = makeEnvironment();
-  defineBuiltinOperator(env, "head", BuiltinOperators.head, Function);
-  defineBuiltinOperator(env, "+", BuiltinOperators.plus, Function);
+
+  defineBuiltinOperator(env, "head", Head.head, Function);
+  defineBuiltinOperator(env, "+", Plus.plus, Function);
   defineBuiltinOperator(env, "if", If.ifOperator, SpecialForm);
   defineBuiltinOperator(env, "begin", Begin.beginOperator, Function);
   defineBuiltinOperator(env, "set!", Set.setOperator, SpecialForm);
