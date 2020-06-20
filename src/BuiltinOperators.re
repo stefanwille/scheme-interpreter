@@ -63,7 +63,7 @@ let beginOperator: operatorFunction =
     if (length === 0) {
       raise(ArgumentsError("at least one argument is required"));
     };
-    // Return the last argument as result
+    // The result of "begin" is the evaluated last argument
     List.nth(argumentList, length - 1);
   };
 
