@@ -77,31 +77,3 @@ let setOperator: operatorFunction =
     | _ => raise(ArgumentsError("Expected exactly 2 arguments"))
     };
   };
-
-let quote: operatorFunction =
-  (argumentList: list(node), _environment) => {
-    let length = List.length(argumentList);
-    if (length !== 1) {
-      raise(ArgumentsError("Expected exactly 1 argument"));
-    };
-    // The result of "quote" is the unquoted text:
-    List.nth(argumentList, 0);
-  };
-
-let lambda: operatorFunction =
-  (argumentList: list(node), environment) => {
-    switch (argumentList) {
-    | [List(parameterList), body] =>
-      let parameterNames: list(string) =
-        List.map(
-          parameter =>
-            switch (parameter) {
-            | Symbol(name) => name
-            | _ => raise(ArgumentsError("Parameter is not a symbol"))
-            },
-          parameterList,
-        );
-      CompoundOperator(parameterNames, body, environment, Function);
-    | _ => raise(ArgumentsError("Exactly 2 arguments expected"))
-    };
-  };
