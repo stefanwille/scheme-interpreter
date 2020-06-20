@@ -39,7 +39,7 @@ describe("extendEnvironment()", () => {
     extendEnvironment(
       environment,
       ["x", "y"],
-      [String("child"), String("hello")],
+      [String("shadow"), String("hello")],
     );
 
   Expect.(
@@ -48,7 +48,7 @@ describe("extendEnvironment()", () => {
         lookupVariableValue(childEnvironment, "x"),
         lookupVariableValue(childEnvironment, "y"),
       );
-      expect(values) |> toEqual((String("child"), String("hello")));
+      expect(values) |> toEqual((String("shadow"), String("hello")));
     })
   );
 
