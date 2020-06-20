@@ -4,6 +4,8 @@ open ArgumentsError;
 exception NotAnOperator;
 
 let rec eval = (expression: node, environment: environment): node =>
+  // Most nodes are self-evaluating.
+  // The big exception is the application of an operator to some arguments.
   switch (expression) {
   | Int(_) => expression
   | String(_) => expression
@@ -28,6 +30,8 @@ and evalApplication = (list: list(node), environment: environment): node =>
     apply(operator, argumentList, environment);
   }
 
+// An operator can be builtin or compound,
+// and it can be either a function or a special form.
 and apply =
     (operator: node, argumentList: list(node), environment: environment)
     : node =>
@@ -63,12 +67,12 @@ and applyBuiltinOperator =
       operatorFunction: operatorFunction,
       operatorType: operatorType,
       argumentList: list(node),
-      invocationEnvironment: environment,
+      environment: environment,
     )
     : node => {
   let usedArgumentList =
-    evalArgumentList(operatorType, argumentList, invocationEnvironment);
-  operatorFunction(usedArgumentList, invocationEnvironment);
+    evalArgumentList(operatorType, argumentList, environment);
+  operatorFunction(usedArgumentList, environment);
 }
 
 and applyCompoundOperator =
@@ -77,11 +81,14 @@ and applyCompoundOperator =
       operatorType: operatorType,
       parameterNames: list(string),
       argumentList: list(node),
-      invocationEnvironment: environment,
+      callSiteEnvironment: environment,
       operatorDefinitionEnvironment: environment,
     ) => {
+  // Since Scheme uses lexical scoping,
+  // the application's environment is based on the environment in which
+  // the operator was defined.
   let usedArgumentList =
-    evalArgumentList(operatorType, argumentList, invocationEnvironment);
+    evalArgumentList(operatorType, argumentList, callSiteEnvironment);
   let applicationEnvironment =
     Environment.extendEnvironment(
       operatorDefinitionEnvironment,
@@ -91,14 +98,16 @@ and applyCompoundOperator =
   eval(body, applicationEnvironment);
 }
 
+// A function receives its argments readily evaluated within the call site's environment,
+// while a special form receives its argument unevaluated.
 and evalArgumentList =
     (
       operatorType: operatorType,
       argumentList: list(node),
-      invocationEnvironment: environment,
+      callSiteEnvironment: environment,
     ) =>
   switch (operatorType) {
   | Function =>
-    List.map(argument => eval(argument, invocationEnvironment), argumentList)
+    List.map(argument => eval(argument, callSiteEnvironment), argumentList)
   | SpecialForm => argumentList
   };
