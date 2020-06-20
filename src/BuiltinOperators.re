@@ -26,7 +26,7 @@ let plus: operatorFunction =
     }: node
   );
 
-let truthy = (node: node): bool =>
+let isTruthy = (node: node): bool =>
   switch (node) {
   | Boolean(false) => false
   | Nil => false
@@ -34,15 +34,20 @@ let truthy = (node: node): bool =>
   | _ => true
   };
 
-let ifFunc: operatorFunction =
+let evalIf = (condition, consequent, alternative, environment) => {
+  let evaledCondition = eval(condition, environment);
+  isTruthy(evaledCondition)
+    ? eval(consequent, environment) : eval(alternative, environment);
+};
+
+let ifOperator: operatorFunction =
   (argumentList: list(node), environment) => {
     switch (argumentList) {
     | [] => raise(ArgumentsError("Missing if condition and consequent"))
-    // TODO: if with 1 argument
     | [condition, consequent, alternative] =>
-      let evaledCondition = eval(condition, environment);
-      truthy(evaledCondition)
-        ? eval(consequent, environment) : eval(alternative, environment);
+      evalIf(condition, consequent, alternative, environment)
+    | [condition, consequent] =>
+      evalIf(condition, consequent, Nil, environment)
     | _ =>
       raise(
         ArgumentsError(
@@ -52,7 +57,7 @@ let ifFunc: operatorFunction =
     };
   };
 
-let beginFunc: operatorFunction =
+let beginOperator: operatorFunction =
   (argumentList: list(node), _environment) => {
     let length = List.length(argumentList);
     if (length === 0) {
@@ -62,7 +67,7 @@ let beginFunc: operatorFunction =
     List.nth(argumentList, length - 1);
   };
 
-let setFunc: operatorFunction =
+let setOperator: operatorFunction =
   (argumentList: list(node), environment) => {
     switch (argumentList) {
     | [Symbol(name), valueExpression] =>

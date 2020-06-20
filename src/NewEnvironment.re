@@ -17,13 +17,23 @@ let defineBuiltinOperator =
 
 let newEnvironment = (): environment => {
   let env: environment = makeEnvironment();
-  defineBuiltinOperator(env, "head", BuiltinFunctions.head, Function);
-  defineBuiltinOperator(env, "+", BuiltinFunctions.plus, Function);
-  defineBuiltinOperator(env, "if", BuiltinFunctions.ifFunc, SpecialForm);
-  defineBuiltinOperator(env, "begin", BuiltinFunctions.beginFunc, Function);
-  defineBuiltinOperator(env, "set!", BuiltinFunctions.setFunc, SpecialForm);
-  defineBuiltinOperator(env, "quote", BuiltinFunctions.quote, SpecialForm);
-  defineBuiltinOperator(env, "lambda", BuiltinFunctions.lambda, SpecialForm);
+  defineBuiltinOperator(env, "head", BuiltinOperators.head, Function);
+  defineBuiltinOperator(env, "+", BuiltinOperators.plus, Function);
+  defineBuiltinOperator(env, "if", BuiltinOperators.ifOperator, SpecialForm);
+  defineBuiltinOperator(
+    env,
+    "begin",
+    BuiltinOperators.beginOperator,
+    Function,
+  );
+  defineBuiltinOperator(
+    env,
+    "set!",
+    BuiltinOperators.setOperator,
+    SpecialForm,
+  );
+  defineBuiltinOperator(env, "quote", BuiltinOperators.quote, SpecialForm);
+  defineBuiltinOperator(env, "lambda", BuiltinOperators.lambda, SpecialForm);
 
   env;
 };

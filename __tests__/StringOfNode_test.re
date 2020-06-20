@@ -43,7 +43,7 @@ describe("stringOfNode", () => {
     test("builtin function", () =>
       expect(
         stringOfNode(
-          BuiltinOperator("plus", BuiltinFunctions.plus, Function),
+          BuiltinOperator("plus", BuiltinOperators.plus, Function),
         ),
       )
       |> toBe("<builtin:plus>")
