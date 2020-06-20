@@ -1,7 +1,9 @@
+// An operator can either be a normal function like "map" or a special form like "define".
 type operatorType =
   | Function
   | SpecialForm;
 
+// An AST node
 type node =
   | Int(int)
   | String(string)
@@ -17,4 +19,5 @@ and environment = {
   parent: option(environment),
 }
 
+// A builtin operator
 and operatorFunction = (list(node), environment) => node;
