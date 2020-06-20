@@ -84,11 +84,11 @@ and applyCompoundOperator =
       callSiteEnvironment: environment,
       operatorDefinitionEnvironment: environment,
     ) => {
+  let usedArgumentList =
+    evalArgumentList(operatorType, argumentList, callSiteEnvironment);
   // Since Scheme uses lexical scoping,
   // the application's environment is based on the environment in which
   // the operator was defined.
-  let usedArgumentList =
-    evalArgumentList(operatorType, argumentList, callSiteEnvironment);
   let applicationEnvironment =
     Environment.extendEnvironment(
       operatorDefinitionEnvironment,
