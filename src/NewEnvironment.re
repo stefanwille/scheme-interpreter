@@ -26,12 +26,7 @@ let newEnvironment = (): environment => {
     BuiltinOperators.beginOperator,
     Function,
   );
-  defineBuiltinOperator(
-    env,
-    "set!",
-    BuiltinOperators.setOperator,
-    SpecialForm,
-  );
+  defineBuiltinOperator(env, "set!", Set.setOperator, SpecialForm);
   defineBuiltinOperator(env, "quote", Quote.quote, SpecialForm);
   defineBuiltinOperator(env, "lambda", Lambda.lambda, SpecialForm);
 
