@@ -6,7 +6,7 @@ let defineBuiltinOperator =
       environment: environment,
       name: string,
       operatorFunction: operatorFunction,
-      operatorType: builtinOperatorType,
+      operatorType: operatorType,
     ) => {
   setVariableValue(
     environment,

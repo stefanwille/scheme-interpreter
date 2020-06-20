@@ -187,8 +187,8 @@ describe("eval", () => {
           | CompoundOperator(
               parameterNames,
               _body,
-              _environment,
-              _builtinOperatorType,
+              _definitionEnvironment,
+              _operatorType,
             ) => parameterNames
           | _ => ["something else"]
           };

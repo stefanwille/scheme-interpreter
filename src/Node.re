@@ -1,4 +1,4 @@
-type builtinOperatorType =
+type operatorType =
   | Function
   | SpecialForm;
 
@@ -7,8 +7,8 @@ type node =
   | String(string)
   | Boolean(bool)
   | Symbol(string)
-  | BuiltinOperator(string, operatorFunction, builtinOperatorType)
-  | CompoundOperator(list(string), node, environment, builtinOperatorType)
+  | BuiltinOperator(string, operatorFunction, operatorType)
+  | CompoundOperator(list(string), node, environment, operatorType)
   | List(list(node))
   | Nil
 
