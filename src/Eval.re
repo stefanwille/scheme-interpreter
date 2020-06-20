@@ -67,15 +67,7 @@ and applyBuiltinOperator =
     )
     : node => {
   let usedArgumentList =
-    switch (operatorType) {
-    | Function =>
-      List.map(
-        argument => eval(argument, invocationEnvironment),
-        argumentList,
-      )
-    | SpecialForm => argumentList
-    };
-
+    evalArgumentList(operatorType, argumentList, invocationEnvironment);
   operatorFunction(usedArgumentList, invocationEnvironment);
 }
 
@@ -89,15 +81,7 @@ and applyCompoundOperator =
       operatorDefinitionEnvironment: environment,
     ) => {
   let usedArgumentList =
-    switch (operatorType) {
-    | Function =>
-      List.map(
-        argument => eval(argument, invocationEnvironment),
-        argumentList,
-      )
-    | SpecialForm => argumentList
-    };
-
+    evalArgumentList(operatorType, argumentList, invocationEnvironment);
   let applicationEnvironment =
     Environment.extendEnvironment(
       operatorDefinitionEnvironment,
@@ -105,4 +89,16 @@ and applyCompoundOperator =
       usedArgumentList,
     );
   eval(body, applicationEnvironment);
-};
+}
+
+and evalArgumentList =
+    (
+      operatorType: operatorType,
+      argumentList: list(node),
+      invocationEnvironment: environment,
+    ) =>
+  switch (operatorType) {
+  | Function =>
+    List.map(argument => eval(argument, invocationEnvironment), argumentList)
+  | SpecialForm => argumentList
+  };
