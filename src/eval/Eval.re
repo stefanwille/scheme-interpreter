@@ -8,19 +8,14 @@ let rec eval = (expression: node, environment: environment): node =>
   // Most nodes are self-evaluating.
   // The big exception is the application of an operator to some arguments.
   switch (expression) {
-  | Int(_) => expression
-  | String(_) => expression
-  | Boolean(_) => expression
+  | Int(_)
+  | String(_)
+  | Boolean(_)
+  | Nil
+  | BuiltinOperator(_)
+  | CompoundOperator(_) => expression
   | Symbol(name) => Environment.lookupVariableValue(environment, name)
-  | BuiltinOperator(_name, _function, _type) => expression
-  | CompoundOperator(
-      _parameterNames,
-      _body,
-      _operatorDefinitionEnvironment,
-      _operatorType,
-    ) => expression
   | List(list) => evalApplication(list, environment)
-  | Nil => expression
   }
 
 and evalApplication = (list: list(node), environment: environment): node =>
