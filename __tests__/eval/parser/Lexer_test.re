@@ -14,7 +14,7 @@ describe("nextToken", () => {
     Expect.(
       test("returns an Int", () => {
         let _lexer = newLexer("123");
-        let (token, _lexer) = nextToken({input: "  456", index: 2});
+        let (token, _lexer) = nextToken({input: "  456", index: 0});
         expect(token) |> toEqual(Int(456));
       })
     )

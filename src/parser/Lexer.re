@@ -14,7 +14,7 @@ type token =
 let newLexer = (input: string): lexer => {input, index: 0};
 
 let whitespacePattern = [%re "/\s+/"];
-let intPattern = [%re "/\d+/"];
+let intPattern = [%re "/^\s*(\d+)/"];
 
 let nextTokenFrom = (lexer: lexer): (token, lexer) => {
   let currentInput =
@@ -34,10 +34,10 @@ let nextTokenFrom = (lexer: lexer): (token, lexer) => {
     Js.String.match(intPattern, currentInput);
   Js.log(result);
   switch (result) {
-  | Some([|s|]) =>
+  | Some(array) =>
     Js.log("****** got string");
-    Js.log(s);
-    let token: token = Int(int_of_string(s));
+    Js.log(array);
+    let token: token = Int(int_of_string(array[1]));
     let nextLexer: lexer = {
       input: lexer.input,
       index: String.length(lexer.input),
