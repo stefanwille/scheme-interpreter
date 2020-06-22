@@ -12,7 +12,7 @@ describe("nextToken", () => {
 
   describe("with an int", () => {
     Expect.(
-      test("returns an Int token", () => {
+      test("returns an INT token", () => {
         let lexer = newLexer("456");
         let (token, _lexer) = nextToken(lexer);
         expect(token) |> toEqual(INT(456));
@@ -43,7 +43,7 @@ describe("nextToken", () => {
 
   describe("with a string", () => {
     Expect.(
-      test("returns a String token", () => {
+      test("returns a STRING token", () => {
         let lexer = newLexer("\"abc\"");
         let (token, _lexer) = nextToken(lexer);
         expect(token) |> toEqual(STRING("abc"));
@@ -53,16 +53,24 @@ describe("nextToken", () => {
 
   describe("with a left paren", () => {
     Expect.(
-      test("returns a LParen token", () => {
-        let lexer = newLexer("\"abc\"");
+      test("returns a LPAREN token", () => {
+        let lexer = newLexer(" (");
         let (token, _lexer) = nextToken(lexer);
-        expect(token) |> toEqual(STRING("abc"));
+        expect(token) |> toEqual(LPAREN);
+      })
+    )
+  });
+
+  describe("with a right paren", () => {
+    Expect.(
+      test("returns a RPAREN token", () => {
+        let lexer = newLexer(" )");
+        let (token, _lexer) = nextToken(lexer);
+        expect(token) |> toEqual(RPAREN);
       })
     )
   });
   // TODO:
-  // Add LPAREN
-  // Add RPAREN
   // Add Symbol
   // Add nil to environment
   // Add true, false to environment

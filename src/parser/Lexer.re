@@ -10,8 +10,8 @@ type token =
   | INT(int)
   | STRING(string)
   | END
-  | LPAREN;
-// RPAREN
+  | LPAREN
+  | RPAREN;
 // STRING
 // SYMBOL
 
@@ -36,7 +36,7 @@ let skipCharacters = (lexer: lexer, stringToSkip: string): lexer => {
   nextLexer;
 };
 
-let whitespacePattern = [%re "/^\s+/"];
+let whitespacePattern = [%re "/^\\s+/"];
 
 let skipWhitspace = (lexer: lexer): lexer => {
   let result: option(array(Js.String.t)) =
@@ -49,7 +49,7 @@ let skipWhitspace = (lexer: lexer): lexer => {
   };
 };
 
-let intPattern = [%re "/^(\d+)/"];
+let intPattern = [%re "/^(\\d+)/"];
 
 let scanInt = (lexer: lexer): (token, lexer) => {
   let result: option(array(Js.String.t)) =
@@ -91,7 +91,8 @@ let nextTokenFrom = (lexer: lexer): (token, lexer) => {
   let nextChar = lexer.currentInput.[0];
 
   switch (nextChar) {
-  // | '(' => (LPAREN, skipCharacters(lexer, "("))
+  | '(' => (LPAREN, skipCharacters(lexer, "("))
+  | ')' => (RPAREN, skipCharacters(lexer, ")"))
   | '"' => scanString(lexer)
   | _ when isDigit(nextChar) => scanInt(lexer)
   | _ => raise(SyntaxError("Bad syntax"))
