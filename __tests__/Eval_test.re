@@ -69,21 +69,26 @@ describe("eval", () => {
     );
   });
 
-  describe("with a builtin function", () => {
+  describe("with a builtin function: +", () => {
     let environment: environment = newEnvironment();
 
     Expect.(
-      test("returns the sum", () =>
+      test("evaluates the arguments and applies the operator function", () =>
         expect(eval(List([Symbol("+"), Int(1), Int(2)]), environment))
         |> toEqual(Int(3))
       )
     );
 
     Expect.(
-      test("handles any number of ints", () =>
+      test("works recursively", () =>
         expect(
           eval(
-            List([Symbol("+"), Int(1), Int(2), Int(3), Int(4)]),
+            List([
+              Symbol("+"),
+              Int(1),
+              Int(2),
+              List([Symbol("+"), Int(3), Int(4)]),
+            ]),
             environment,
           ),
         )
