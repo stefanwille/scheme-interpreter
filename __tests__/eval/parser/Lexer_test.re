@@ -80,8 +80,4 @@ describe("nextToken", () => {
       })
     )
   });
-  // TODO:
-  // Add nil to environment
-  // Add true, false to environment
-  // Add true, false to environment
 });

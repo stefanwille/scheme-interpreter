@@ -98,6 +98,31 @@ describe("eval", () => {
       )
     );
   });
+
   //
   // CompundOperator is tested in Lambda_test.re
+
+  describe("builtin values", () => {
+    let environment: environment = newEnvironment();
+
+    Expect.(
+      test("false", () =>
+        expect(eval(Symbol("false"), environment))
+        |> toEqual(Boolean(false))
+      )
+    );
+
+    Expect.(
+      test("true", () =>
+        expect(eval(Symbol("true"), environment))
+        |> toEqual(Boolean(true))
+      )
+    );
+
+    Expect.(
+      test("nil", () =>
+        expect(eval(Symbol("nil"), environment)) |> toEqual(Nil)
+      )
+    );
+  });
 });
