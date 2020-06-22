@@ -70,8 +70,17 @@ describe("nextToken", () => {
       })
     )
   });
+
+  describe("with a symbol", () => {
+    Expect.(
+      test("returns a SYMBOL token", () => {
+        let lexer = newLexer(" begin");
+        let (token, _lexer) = nextToken(lexer);
+        expect(token) |> toEqual(SYMBOL("begin"));
+      })
+    )
+  });
   // TODO:
-  // Add Symbol
   // Add nil to environment
   // Add true, false to environment
   // Add true, false to environment

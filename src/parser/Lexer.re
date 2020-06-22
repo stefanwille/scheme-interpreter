@@ -11,9 +11,8 @@ type token =
   | STRING(string)
   | END
   | LPAREN
-  | RPAREN;
-// STRING
-// SYMBOL
+  | RPAREN
+  | SYMBOL(string);
 
 let newLexer = (input: string): lexer => {
   originalInput: input,
@@ -21,7 +20,7 @@ let newLexer = (input: string): lexer => {
   index: 0,
 };
 
-let skipCharacters = (lexer: lexer, stringToSkip: string): lexer => {
+let advanceLexer = (lexer: lexer, stringToSkip: string): lexer => {
   let len = String.length(stringToSkip);
   let nextLexer: lexer = {
     originalInput: lexer.originalInput,
@@ -44,7 +43,7 @@ let skipWhitspace = (lexer: lexer): lexer => {
   switch (result) {
   | Some(array) =>
     let stringToSkip = array[0];
-    skipCharacters(lexer, stringToSkip);
+    advanceLexer(lexer, stringToSkip);
   | _ => lexer
   };
 };
@@ -59,7 +58,7 @@ let scanInt = (lexer: lexer): (token, lexer) => {
   | Some(array) =>
     let digits = array[0];
     let token: token = INT(int_of_string(digits));
-    let nextLexer: lexer = skipCharacters(lexer, digits);
+    let nextLexer: lexer = advanceLexer(lexer, digits);
     (token, nextLexer);
   | None => raise(SyntaxError("Not a number"))
   };
@@ -75,26 +74,40 @@ let scanString = (lexer: lexer): (token, lexer) => {
   | Some(array) =>
     let s = array[1];
     let token: token = STRING(s);
-    let nextLexer: lexer = skipCharacters(lexer, array[0]);
+    let nextLexer: lexer = advanceLexer(lexer, array[0]);
     (token, nextLexer);
   | None => raise(SyntaxError("Missing closing \""))
   };
 };
 
-let isEnd = (lexer: lexer): bool => {
-  String.length(lexer.currentInput) == 0;
+let symbolPattern = [%re "/^[a-z_!\\-]+/g"];
+
+let scanSymbol = (lexer: lexer): (token, lexer) => {
+  let result: option(array(Js.String.t)) =
+    Js.String.match(symbolPattern, lexer.currentInput);
+
+  switch (result) {
+  | Some(array) =>
+    let symbolName = array[0];
+    let token: token = SYMBOL(symbolName);
+    let nextLexer: lexer = advanceLexer(lexer, symbolName);
+    (token, nextLexer);
+  | None => raise(SyntaxError("Not a number"))
+  };
 };
 
-let isDigit = (c: char) => c >= '0' && c <= '9';
+let isEnd = (lexer: lexer): bool => String.length(lexer.currentInput) == 0;
+let isInt = (s: string) => Js.String.match(intPattern, s) != None;
+let isSymbol = (s: string) => Js.String.match(symbolPattern, s) != None;
 
 let nextTokenFrom = (lexer: lexer): (token, lexer) => {
   let nextChar = lexer.currentInput.[0];
-
   switch (nextChar) {
-  | '(' => (LPAREN, skipCharacters(lexer, "("))
-  | ')' => (RPAREN, skipCharacters(lexer, ")"))
+  | '(' => (LPAREN, advanceLexer(lexer, "("))
+  | ')' => (RPAREN, advanceLexer(lexer, ")"))
   | '"' => scanString(lexer)
-  | _ when isDigit(nextChar) => scanInt(lexer)
+  | _ when isInt(lexer.currentInput) => scanInt(lexer)
+  | _ when isSymbol(lexer.currentInput) => scanSymbol(lexer)
   | _ => raise(SyntaxError("Bad syntax"))
   };
 };
