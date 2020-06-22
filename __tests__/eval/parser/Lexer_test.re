@@ -12,9 +12,19 @@ describe("nextToken", () => {
 
   describe("with an int", () => {
     Expect.(
-      test("returns an Int", () => {
-        let _lexer = newLexer("123");
-        let (token, _lexer) = nextToken({input: "  456", index: 0});
+      test("returns an Int token", () => {
+        let lexer = newLexer("456");
+        let (token, _lexer) = nextToken(lexer);
+        expect(token) |> toEqual(Int(456));
+      })
+    )
+  });
+
+  describe("with leading whitespace", () => {
+    Expect.(
+      test("skips it", () => {
+        let lexer = newLexer("   456");
+        let (token, _lexer) = nextToken(lexer);
         expect(token) |> toEqual(Int(456));
       })
     )

@@ -1,5 +1,6 @@
 type lexer = {
-  input: string,
+  originalInput: string,
+  currentInput: string,
   index: int,
 };
 
@@ -11,50 +12,74 @@ type token =
 // STRING
 // SYMBOL
 
-let newLexer = (input: string): lexer => {input, index: 0};
+let newLexer = (input: string): lexer => {
+  originalInput: input,
+  currentInput: input,
+  index: 0,
+};
 
-let whitespacePattern = [%re "/\s+/"];
-let intPattern = [%re "/^\s*(\d+)/"];
+let skipCharacters = (lexer: lexer, stringToSkip: string): lexer => {
+  let len = String.length(stringToSkip);
+  let nextLexer: lexer = {
+    originalInput: lexer.originalInput,
+    currentInput:
+      String.sub(
+        lexer.currentInput,
+        len,
+        String.length(lexer.currentInput) - len,
+      ),
+    index: lexer.index + len,
+  };
+  nextLexer;
+};
 
-let nextTokenFrom = (lexer: lexer): (token, lexer) => {
-  let currentInput =
-    String.sub(
-      lexer.input,
-      lexer.index,
-      String.length(lexer.input) - lexer.index,
-    );
+let whitespacePattern = [%re "/^\s+/"];
 
-  // let match = current |> Js.String.match(intPattern);
-
-  Js.log("****** Huhu");
-
-  Js.log("current " ++ currentInput);
-
+let skipWhitspace = (lexer: lexer): lexer => {
+  Js.log("For whitspace");
   let result: option(array(Js.String.t)) =
-    Js.String.match(intPattern, currentInput);
+    Js.String.match(whitespacePattern, lexer.currentInput);
   Js.log(result);
   switch (result) {
   | Some(array) =>
-    Js.log("****** got string");
+    Js.log("****** got whitespace");
     Js.log(array);
-    let token: token = Int(int_of_string(array[1]));
-    let nextLexer: lexer = {
-      input: lexer.input,
-      index: String.length(lexer.input),
-    };
-    (token, nextLexer);
-  | _ =>
-    Js.log("****** END");
-    (END, {input: lexer.input, index: String.length(lexer.input)});
+    let stringToSkip = array[0];
+    skipCharacters(lexer, stringToSkip);
+  | _ => lexer
   };
 };
 
-let nextToken = (lexer: lexer): (token, lexer) => {
-  let endIndex = String.length(lexer.input);
-  if (lexer.index >= endIndex) {
-    let nextLexer: lexer = {input: lexer.input, index: endIndex};
-    (END, nextLexer);
+let intPattern = [%re "/^(\d+)/"];
+
+let nextTokenFrom = (lexer: lexer): (token, lexer) => {
+  // let match = current |> Js.String.match(intPattern);
+
+  Js.log("****** Huhu " ++ lexer.currentInput);
+
+  let lexer = skipWhitspace(lexer);
+
+  Js.log("about to match on" ++ lexer.currentInput);
+  let whitespaceResult: option(array(Js.String.t)) =
+    Js.String.match(intPattern, lexer.currentInput);
+  Js.log(whitespaceResult);
+  switch (whitespaceResult) {
+  | Some(array) =>
+    Js.log("****** got string");
+    Js.log(array);
+    let digits = array[0];
+    let token: token = Int(int_of_string(digits));
+    let nextLexer: lexer = skipCharacters(lexer, digits);
+    (token, nextLexer);
+  | _ =>
+    Js.log("****** END");
+    (END, lexer);
+  };
+};
+
+let nextToken = (lexer: lexer): (token, lexer) =>
+  if (String.length(lexer.currentInput) == 0) {
+    (END, lexer);
   } else {
     nextTokenFrom(lexer);
   };
-};
