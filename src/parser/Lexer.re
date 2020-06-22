@@ -7,8 +7,8 @@ type lexer = {
 };
 
 type token =
-  | Int(int)
-  | String(string)
+  | INT(int)
+  | STRING(string)
   | END
   | LPAREN;
 // RPAREN
@@ -39,14 +39,10 @@ let skipCharacters = (lexer: lexer, stringToSkip: string): lexer => {
 let whitespacePattern = [%re "/^\s+/"];
 
 let skipWhitspace = (lexer: lexer): lexer => {
-  Js.log("For whitspace");
   let result: option(array(Js.String.t)) =
     Js.String.match(whitespacePattern, lexer.currentInput);
-  Js.log(result);
   switch (result) {
   | Some(array) =>
-    Js.log("****** got whitespace");
-    Js.log(array);
     let stringToSkip = array[0];
     skipCharacters(lexer, stringToSkip);
   | _ => lexer
@@ -58,14 +54,11 @@ let intPattern = [%re "/^(\d+)/"];
 let scanInt = (lexer: lexer): (token, lexer) => {
   let result: option(array(Js.String.t)) =
     Js.String.match(intPattern, lexer.currentInput);
-  Js.log(result);
 
   switch (result) {
   | Some(array) =>
-    Js.log("****** got string");
-    Js.log(array);
     let digits = array[0];
-    let token: token = Int(int_of_string(digits));
+    let token: token = INT(int_of_string(digits));
     let nextLexer: lexer = skipCharacters(lexer, digits);
     (token, nextLexer);
   | None => raise(SyntaxError("Not a number"))
@@ -75,17 +68,13 @@ let scanInt = (lexer: lexer): (token, lexer) => {
 let stringPattern = [%re "/^\"([^\"]*)\"/"];
 
 let scanString = (lexer: lexer): (token, lexer) => {
-  Js.log("****** scan string");
   let result: option(array(Js.String.t)) =
     Js.String.match(stringPattern, lexer.currentInput);
-  Js.log(result);
 
   switch (result) {
   | Some(array) =>
-    Js.log("****** got string");
-    Js.log(array);
     let s = array[1];
-    let token: token = String(s);
+    let token: token = STRING(s);
     let nextLexer: lexer = skipCharacters(lexer, array[0]);
     (token, nextLexer);
   | None => raise(SyntaxError("Missing closing \""))
@@ -100,7 +89,6 @@ let isDigit = (c: char) => c >= '0' && c <= '9';
 
 let nextTokenFrom = (lexer: lexer): (token, lexer) => {
   let nextChar = lexer.currentInput.[0];
-  Js.log("****** Huhu " ++ lexer.currentInput);
 
   switch (nextChar) {
   // | '(' => (LPAREN, skipCharacters(lexer, "("))
