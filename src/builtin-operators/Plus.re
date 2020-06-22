@@ -16,3 +16,5 @@ let plus: operatorFunction =
       Int(sum);
     }: node
   );
+
+let operator: node = BuiltinOperator("+", plus, Function);

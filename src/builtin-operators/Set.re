@@ -12,3 +12,5 @@ let setOperator: operatorFunction =
     | _ => raise(ArgumentsError("Expected exactly 2 arguments"))
     };
   };
+
+let operator: node = BuiltinOperator("set!", setOperator, SpecialForm);

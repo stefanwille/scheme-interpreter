@@ -33,3 +33,5 @@ let ifOperator: operatorFunction =
       )
     };
   };
+
+let operator: node = BuiltinOperator("if", ifOperator, SpecialForm);

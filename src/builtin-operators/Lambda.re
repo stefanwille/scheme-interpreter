@@ -18,3 +18,5 @@ let lambda: operatorFunction =
     | _ => raise(ArgumentsError("Exactly 2 arguments expected"))
     };
   };
+
+let operator: node = BuiltinOperator("lambda", lambda, SpecialForm);

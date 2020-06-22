@@ -10,3 +10,5 @@ let beginOperator: operatorFunction =
     // The result of "begin" is the evaluated last argument
     List.nth(argumentList, length - 1);
   };
+
+let operator: node = BuiltinOperator("begin", beginOperator, Function);

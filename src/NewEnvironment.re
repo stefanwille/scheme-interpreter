@@ -1,30 +1,31 @@
 open Node;
 open Environment;
+open ArgumentsError;
 
-let defineBuiltinOperator =
-    (
-      environment: environment,
-      name: string,
-      operatorFunction: operatorFunction,
-      operatorType: operatorType,
-    ) => {
-  setVariableValue(
-    environment,
-    name,
-    BuiltinOperator(name, operatorFunction, operatorType),
-  );
+let makeEnvironmentWith = (builtinOperators: list(node)) => {
+  let env = makeEnvironment();
+  let defineBuiltinOperator = (node: node) => {
+    switch (node) {
+    | BuiltinOperator(name, _operatorFunction, _operatorType) =>
+      setVariableValue(env, name, node)
+    | _ => raise(ArgumentsError("Not a BuiltinOperator"))
+    };
+  };
+
+  List.iter(defineBuiltinOperator, builtinOperators);
+  env;
 };
 
+let builtins: list(node) = [
+  Head.operator,
+  Plus.operator,
+  If.operator,
+  Begin.operator,
+  Set.operator,
+  Quote.operator,
+  Lambda.operator,
+];
+
 let newEnvironment = (): environment => {
-  let env: environment = makeEnvironment();
-
-  defineBuiltinOperator(env, "head", Head.head, Function);
-  defineBuiltinOperator(env, "+", Plus.plus, Function);
-  defineBuiltinOperator(env, "if", If.ifOperator, SpecialForm);
-  defineBuiltinOperator(env, "begin", Begin.beginOperator, Function);
-  defineBuiltinOperator(env, "set!", Set.setOperator, SpecialForm);
-  defineBuiltinOperator(env, "quote", Quote.quote, SpecialForm);
-  defineBuiltinOperator(env, "lambda", Lambda.lambda, SpecialForm);
-
-  env;
+  makeEnvironmentWith(builtins);
 };

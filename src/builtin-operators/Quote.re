@@ -10,3 +10,5 @@ let quote: operatorFunction =
     // The result of "quote" is the unquoted text:
     List.nth(argumentList, 0);
   };
+
+let operator: node = BuiltinOperator("quote", quote, SpecialForm);
