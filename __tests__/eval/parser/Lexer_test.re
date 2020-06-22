@@ -40,6 +40,16 @@ describe("nextToken", () => {
       })
     )
   });
+
+  describe("with a string", () => {
+    Expect.(
+      test("returns a String token", () => {
+        let lexer = newLexer("\"abc\"");
+        let (token, _lexer) = nextToken(lexer);
+        expect(token) |> toEqual(String("abc"));
+      })
+    )
+  });
   // describe("with a string", () => {
   //   Expect.(
   //     test("returns the same expression", () =>

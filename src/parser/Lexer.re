@@ -1,3 +1,5 @@
+open SyntaxError;
+
 type lexer = {
   originalInput: string,
   currentInput: string,
@@ -6,8 +8,9 @@ type lexer = {
 
 type token =
   | Int(int)
-  | END;
-// LPAREN
+  | String(string)
+  | END
+  | LPAREN;
 // RPAREN
 // STRING
 // SYMBOL
@@ -52,18 +55,12 @@ let skipWhitspace = (lexer: lexer): lexer => {
 
 let intPattern = [%re "/^(\d+)/"];
 
-let nextTokenFrom = (lexer: lexer): (token, lexer) => {
-  // let match = current |> Js.String.match(intPattern);
-
-  Js.log("****** Huhu " ++ lexer.currentInput);
-
-  let lexer = skipWhitspace(lexer);
-
-  Js.log("about to match on" ++ lexer.currentInput);
-  let whitespaceResult: option(array(Js.String.t)) =
+let scanInt = (lexer: lexer): (token, lexer) => {
+  let result: option(array(Js.String.t)) =
     Js.String.match(intPattern, lexer.currentInput);
-  Js.log(whitespaceResult);
-  switch (whitespaceResult) {
+  Js.log(result);
+
+  switch (result) {
   | Some(array) =>
     Js.log("****** got string");
     Js.log(array);
@@ -71,15 +68,53 @@ let nextTokenFrom = (lexer: lexer): (token, lexer) => {
     let token: token = Int(int_of_string(digits));
     let nextLexer: lexer = skipCharacters(lexer, digits);
     (token, nextLexer);
-  | _ =>
-    Js.log("****** END");
-    (END, lexer);
+  | None => raise(SyntaxError("Not a number"))
   };
 };
 
-let nextToken = (lexer: lexer): (token, lexer) =>
-  if (String.length(lexer.currentInput) == 0) {
+let stringPattern = [%re "/^\"([^\"]*)\"/"];
+
+let scanString = (lexer: lexer): (token, lexer) => {
+  Js.log("****** scan string");
+  let result: option(array(Js.String.t)) =
+    Js.String.match(stringPattern, lexer.currentInput);
+  Js.log(result);
+
+  switch (result) {
+  | Some(array) =>
+    Js.log("****** got string");
+    Js.log(array);
+    let s = array[1];
+    let token: token = String(s);
+    let nextLexer: lexer = skipCharacters(lexer, array[0]);
+    (token, nextLexer);
+  | None => raise(SyntaxError("Missing closing \""))
+  };
+};
+
+let isEnd = (lexer: lexer): bool => {
+  String.length(lexer.currentInput) == 0;
+};
+
+let isDigit = (c: char) => c >= '0' && c <= '9';
+
+let nextTokenFrom = (lexer: lexer): (token, lexer) => {
+  let nextChar = lexer.currentInput.[0];
+  Js.log("****** Huhu " ++ lexer.currentInput);
+
+  switch (nextChar) {
+  // | '(' => (LPAREN, skipCharacters(lexer, "("))
+  | '"' => scanString(lexer)
+  | _ when isDigit(nextChar) => scanInt(lexer)
+  | _ => raise(SyntaxError("Bad syntax"))
+  };
+};
+
+let nextToken = (lexer: lexer): (token, lexer) => {
+  let lexer = skipWhitspace(lexer);
+  if (isEnd(lexer)) {
     (END, lexer);
   } else {
     nextTokenFrom(lexer);
   };
+};
