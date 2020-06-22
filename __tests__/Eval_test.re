@@ -46,19 +46,6 @@ describe("eval", () => {
     );
   });
 
-  describe("with a quote", () => {
-    let environment: environment = newEnvironment();
-
-    Expect.(
-      test("returns the unquoted argument", () =>
-        expect(
-          eval(List([Symbol("quote"), Symbol("hello")]), environment),
-        )
-        |> toEqual(Symbol("hello"))
-      )
-    );
-  });
-
   describe("with nil", () => {
     let environment: environment = newEnvironment();
 
@@ -93,6 +80,21 @@ describe("eval", () => {
           ),
         )
         |> toEqual(Int(1 + 2 + 3 + 4))
+      )
+    );
+  });
+
+  describe("with a builtin special form: quote", () => {
+    let environment: environment = newEnvironment();
+
+    Expect.(
+      test(
+        "does not evaluate the arguments and applies the operator function ",
+        () =>
+        expect(
+          eval(List([Symbol("quote"), Symbol("hello")]), environment),
+        )
+        |> toEqual(Symbol("hello"))
       )
     );
   });
