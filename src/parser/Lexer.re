@@ -14,7 +14,7 @@ type token =
 let newLexer = (input: string): lexer => {input, index: 0};
 
 let whitespacePattern = [%re "/\s+/"];
-let intPattern = [%re "/(0-9)+/"];
+let intPattern = [%re "/\d+/"];
 
 let nextTokenFrom = (lexer: lexer): (token, lexer) => {
   let currentInput =
@@ -24,16 +24,29 @@ let nextTokenFrom = (lexer: lexer): (token, lexer) => {
       String.length(lexer.input) - lexer.index,
     );
 
+  // let match = current |> Js.String.match(intPattern);
+
+  Js.log("****** Huhu");
+
   Js.log("current " ++ currentInput);
 
-  // let match = current |> Js.String.match(intPattern);
-  let nextChar = currentInput.[0];
-  switch (nextChar) {
-  | '0' => Js.log("Int")
-  | _ => Js.log("other")
+  let result: option(array(Js.String.t)) =
+    Js.String.match(intPattern, currentInput);
+  Js.log(result);
+  switch (result) {
+  | Some([|s|]) =>
+    Js.log("****** got string");
+    Js.log(s);
+    let token: token = Int(int_of_string(s));
+    let nextLexer: lexer = {
+      input: lexer.input,
+      index: String.length(lexer.input),
+    };
+    (token, nextLexer);
+  | _ =>
+    Js.log("****** END");
+    (END, {input: lexer.input, index: String.length(lexer.input)});
   };
-
-  (Int(123), {input: lexer.input, index: 2});
 };
 
 let nextToken = (lexer: lexer): (token, lexer) => {

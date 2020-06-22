@@ -6,16 +6,16 @@ describe("nextToken", () => {
     test("returns the next lexer", () => {
       let lexer = newLexer("123");
       let (_token, lexer) = nextToken(lexer);
-      expect(lexer.index) |> toEqual(2);
+      expect(lexer.index) |> toEqual(3);
     })
   );
 
   describe("with an int", () => {
     Expect.(
       test("returns an Int", () => {
-        let lexer = newLexer("123");
-        let (token, _lexer) = nextToken({input: "  123  ", index: 2});
-        expect(token) |> toEqual(Int(123));
+        let _lexer = newLexer("123");
+        let (token, _lexer) = nextToken({input: "  456", index: 2});
+        expect(token) |> toEqual(Int(456));
       })
     )
   });
