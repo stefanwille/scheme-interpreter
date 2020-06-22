@@ -7,12 +7,12 @@ type lexer = {
 };
 
 type token =
-  | INT(int)
-  | STRING(string)
-  | END
   | LPAREN
   | RPAREN
-  | SYMBOL(string);
+  | INT(int)
+  | STRING(string)
+  | SYMBOL(string)
+  | END;
 
 let newLexer = (input: string): lexer => {
   originalInput: input,
