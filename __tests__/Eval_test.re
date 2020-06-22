@@ -69,7 +69,7 @@ describe("eval", () => {
     );
   });
 
-  describe("with +", () => {
+  describe("with a builtin function", () => {
     let environment: environment = newEnvironment();
 
     Expect.(
@@ -88,27 +88,6 @@ describe("eval", () => {
           ),
         )
         |> toEqual(Int(1 + 2 + 3 + 4))
-      )
-    );
-  });
-
-  describe("with begin", () => {
-    let environment: environment = newEnvironment();
-
-    Expect.(
-      test("evaluates all arguments and returns the last result", () =>
-        expect(
-          eval(
-            List([
-              Symbol("begin"),
-              String("One"),
-              String("Two"),
-              String("Three"),
-            ]),
-            environment,
-          ),
-        )
-        |> toEqual(String("Three"))
       )
     );
   });
