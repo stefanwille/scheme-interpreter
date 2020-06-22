@@ -1,3 +1,5 @@
+// The nodes that make up the AST.
+
 // An operator can either be a normal function like "map" or a special form like "define".
 type operatorType =
   | Function
