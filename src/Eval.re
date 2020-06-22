@@ -1,5 +1,6 @@
 open Node;
 open ArgumentsError;
+open StringOfNode;
 
 exception NotAnOperator;
 
@@ -59,7 +60,9 @@ and apply =
       operatorDefinitionEnvironment,
     )
 
-  | _ => raise(NotAnOperator)
+  | _ =>
+    Js.log("This is not an operator: " ++ stringOfNode(operator));
+    raise(NotAnOperator);
   }
 
 and applyBuiltinOperator =
