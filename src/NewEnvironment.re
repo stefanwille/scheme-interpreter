@@ -18,6 +18,7 @@ let makeEnvironmentWith = (builtinOperators: list(node)) => {
 
 let builtins: list(node) = [
   Head.operator,
+  Tail.operator,
   Plus.operator,
   If.operator,
   Begin.operator,
