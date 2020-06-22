@@ -98,4 +98,6 @@ describe("eval", () => {
       )
     );
   });
+  //
+  // CompundOperator is tested in Lambda_test.re
 });
