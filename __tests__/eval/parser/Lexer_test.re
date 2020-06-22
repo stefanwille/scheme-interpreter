@@ -29,6 +29,17 @@ describe("nextToken", () => {
       })
     )
   });
+
+  describe("at the end of the input", () => {
+    Expect.(
+      test("returns an END token", () => {
+        let lexer = newLexer("4    ");
+        let (_token, lexer) = nextToken(lexer);
+        let (token, _lexer) = nextToken(lexer);
+        expect(token) |> toEqual(END);
+      })
+    )
+  });
   // describe("with a string", () => {
   //   Expect.(
   //     test("returns the same expression", () =>
