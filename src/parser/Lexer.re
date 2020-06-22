@@ -1,11 +1,5 @@
 open SyntaxError;
 
-type lexer = {
-  originalInput: string,
-  currentInput: string,
-  index: int,
-};
-
 type token =
   | LPAREN
   | RPAREN
@@ -13,6 +7,12 @@ type token =
   | STRING(string)
   | SYMBOL(string)
   | END;
+
+type lexer = {
+  originalInput: string,
+  currentInput: string,
+  index: int,
+};
 
 let newLexer = (input: string): lexer => {
   originalInput: input,
@@ -37,14 +37,14 @@ let advanceLexer = (lexer: lexer, stringToSkip: string): lexer => {
 
 let whitespacePattern = [%re "/^\\s+/"];
 
-let skipWhitspace = (lexer: lexer): lexer => {
+let scanWhitspace = (lexer: lexer): lexer => {
   let result: option(array(Js.String.t)) =
     Js.String.match(whitespacePattern, lexer.currentInput);
   switch (result) {
   | Some(array) =>
-    let stringToSkip = array[0];
-    advanceLexer(lexer, stringToSkip);
-  | _ => lexer
+    let whitespace = array[0];
+    advanceLexer(lexer, whitespace);
+  | _ => lexer // No whitespace
   };
 };
 
@@ -56,9 +56,9 @@ let scanInt = (lexer: lexer): (token, lexer) => {
 
   switch (result) {
   | Some(array) =>
-    let digits = array[0];
-    let token: token = INT(int_of_string(digits));
-    let nextLexer: lexer = advanceLexer(lexer, digits);
+    let intString = array[0];
+    let token: token = INT(int_of_string(intString));
+    let nextLexer: lexer = advanceLexer(lexer, intString);
     (token, nextLexer);
   | None => raise(SyntaxError("Not a number"))
   };
@@ -72,11 +72,12 @@ let scanString = (lexer: lexer): (token, lexer) => {
 
   switch (result) {
   | Some(array) =>
-    let s = array[1];
-    let token: token = STRING(s);
-    let nextLexer: lexer = advanceLexer(lexer, array[0]);
+    let quotedString = array[0];
+    let unquotedString = array[1];
+    let token: token = STRING(unquotedString);
+    let nextLexer: lexer = advanceLexer(lexer, quotedString);
     (token, nextLexer);
-  | None => raise(SyntaxError("Missing closing \""))
+  | None => raise(SyntaxError("Not a string"))
   };
 };
 
@@ -113,7 +114,7 @@ let nextTokenFrom = (lexer: lexer): (token, lexer) => {
 };
 
 let nextToken = (lexer: lexer): (token, lexer) => {
-  let lexer = skipWhitspace(lexer);
+  let lexer = scanWhitspace(lexer);
   if (isEnd(lexer)) {
     (END, lexer);
   } else {
