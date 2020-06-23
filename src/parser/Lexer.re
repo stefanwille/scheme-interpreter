@@ -1,12 +1,5 @@
 open SyntaxError;
-
-type token =
-  | LPAREN
-  | RPAREN
-  | INT(int)
-  | STRING(string)
-  | SYMBOL(string)
-  | END;
+open Token;
 
 type lexer = {
   originalInput: string,
@@ -120,4 +113,9 @@ let nextToken = (lexer: lexer): (token, lexer) => {
   } else {
     nextTokenFrom(lexer);
   };
+};
+
+let peekNextToken = (lexer: lexer): token => {
+  let (token, _lexer) = nextToken(lexer);
+  token;
 };

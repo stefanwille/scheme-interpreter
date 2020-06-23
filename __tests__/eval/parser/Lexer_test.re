@@ -1,5 +1,6 @@
 open Jest;
 open Lexer;
+open Token;
 
 describe("nextToken", () => {
   Expect.(
