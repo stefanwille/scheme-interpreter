@@ -6,11 +6,22 @@ open Lexer;
  Grammar used for this parser:
 
  Program ::=  Node* END;
- Node ::= INT | STRING | SYMBOL | (LPAREN List);
- List ::= Node* RPAREN;
+ Node ::= INT | STRING | SYMBOL | List;
+ List ::= LPAREN Node* RPAREN;
  */
 
-let rec parseRParen = (lexer: lexer): lexer => {
+let rec parseLParen = (lexer: lexer): lexer => {
+  let lexer = nextToken(lexer);
+  switch (lexer.token) {
+  | Token.LPAREN => lexer
+  | _ =>
+    raise(
+      SyntaxError("Expected '(', got: " ++ Token.stringOfToken(lexer.token)),
+    )
+  };
+}
+
+and parseRParen = (lexer: lexer): lexer => {
   let lexer = nextToken(lexer);
   switch (lexer.token) {
   | Token.RPAREN => lexer
@@ -21,8 +32,17 @@ let rec parseRParen = (lexer: lexer): lexer => {
   };
 }
 
-// Read list of nodes until we see an RPAREN
-and parseList = (lexer: lexer): (lexer, list(node)) => {
+and parseList = (lexer: lexer): (lexer, node) => {
+  let lexer = parseLParen(lexer);
+  let (lexer, nodes) = parseNodesUntilRParen(lexer);
+  let lexer = parseRParen(lexer);
+
+  let node = List(nodes);
+  (lexer, node);
+}
+
+// Parses nodes until we meet an RPAREN
+and parseNodesUntilRParen = (lexer: lexer): (lexer, list(node)) => {
   let lexer = ref(lexer);
   let nodes = ref([]);
   let break = ref(false);
@@ -31,9 +51,7 @@ and parseList = (lexer: lexer): (lexer, list(node)) => {
     let peekedToken = peekNextToken(lexer^);
 
     switch (peekedToken) {
-    | Token.RPAREN =>
-      lexer := parseRParen(lexer^);
-      break := true;
+    | Token.RPAREN => break := true
     | _ =>
       let (nextLexer, node) = parseNode(lexer^);
       lexer := nextLexer;
@@ -45,15 +63,13 @@ and parseList = (lexer: lexer): (lexer, list(node)) => {
 }
 
 and parseNode = (lexer: lexer): (lexer, node) => {
+  let originalLexer = lexer;
   let lexer = nextToken(lexer);
   switch (lexer.token) {
   | Token.INT(i) => (lexer, Int(i))
   | Token.STRING(str) => (lexer, String(str))
   | Token.SYMBOL(name) => (lexer, Symbol(name))
-  | Token.LPAREN =>
-    let (lexer, nodes) = parseList(lexer);
-    let node = List(nodes);
-    (lexer, node);
+  | Token.LPAREN => parseList(originalLexer)
   | _ =>
     raise(
       SyntaxError(
