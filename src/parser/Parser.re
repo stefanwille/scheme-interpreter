@@ -2,6 +2,14 @@ open AST;
 open SyntaxError;
 open Lexer;
 
+/*
+ Grammar used for this parser:
+
+ Program ::=  Node* END;
+ Node ::= INT | STRING | SYMBOL | (LPAREN List);
+ List ::= Node* RPAREN;
+ */
+
 let rec parseRParen = (lexer: lexer): lexer => {
   let (token, lexer) = nextToken(lexer);
   switch (token) {
