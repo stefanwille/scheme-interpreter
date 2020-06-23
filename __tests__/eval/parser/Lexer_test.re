@@ -81,4 +81,14 @@ describe("nextToken", () => {
       })
     )
   });
+
+  describe("with a non character symbol", () => {
+    Expect.(
+      test("returns a SYMBOL token", () => {
+        let lexer = newLexer("!+:$-");
+        let (token, _lexer) = nextToken(lexer);
+        expect(token) |> toEqual(SYMBOL("!+:$-"));
+      })
+    )
+  });
 });

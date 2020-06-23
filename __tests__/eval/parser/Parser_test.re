@@ -43,44 +43,34 @@ describe("parser", () => {
       )
     )
   });
-  // describe("with a builtin function: +", () => {
-  //   let environment: environment = newEnvironment();
-  //   Expect.(
-  //     test("evaluates the arguments and applies the operator function", () =>
-  //       expect(eval(List([Symbol("+"), Int(1), Int(2)]), environment))
-  //       |> toEqual(Int(3))
-  //     )
-  //   );
-  //   Expect.(
-  //     test("works recursively", () =>
-  //       expect(
-  //         eval(
-  //           List([
-  //             Symbol("+"),
-  //             Int(1),
-  //             Int(2),
-  //             List([Symbol("+"), Int(3), Int(4)]),
-  //           ]),
-  //           environment,
-  //         ),
-  //       )
-  //       |> toEqual(Int(1 + 2 + 3 + 4))
-  //     )
-  //   );
-  // });
-  // describe("with a builtin special form: quote", () => {
-  //   let environment: environment = newEnvironment();
-  //   Expect.(
-  //     test(
-  //       "does not evaluate the arguments and applies the operator function ",
-  //       () =>
-  //       expect(
-  //         eval(List([Symbol("quote"), Symbol("hello")]), environment),
-  //       )
-  //       |> toEqual(Symbol("hello"))
-  //     )
-  //   );
-  // });
-  // //
-  // CompundOperator is tested in Lambda_test.re
+
+  describe("with a nested list", () => {
+    Expect.(
+      test("returns a list", () =>
+        expect(parse("(a (b (c)))"))
+        |> toEqual([
+             List([
+               Symbol("a"),
+               List([Symbol("b"), List([Symbol("c")])]),
+             ]),
+           ])
+      )
+    )
+  });
+
+  describe("with an empty list", () => {
+    Expect.(
+      test("returns a list", () =>
+        expect(parse("()")) |> toEqual([List([])])
+      )
+    )
+  });
+
+  describe("with a nested empty list", () => {
+    Expect.(
+      test("returns a list", () =>
+        expect(parse("(())")) |> toEqual([List([List([])])])
+      )
+    )
+  });
 });

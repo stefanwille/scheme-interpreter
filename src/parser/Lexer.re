@@ -74,7 +74,7 @@ let scanString = (lexer: lexer): (token, lexer) => {
   };
 };
 
-let symbolPattern = [%re "/^[a-z_!\\-]+/g"];
+let symbolPattern = [%re "/^[a-z_!+:$\\-]+/g"];
 
 let scanSymbol = (lexer: lexer): (token, lexer) => {
   let result: option(array(Js.String.t)) =
