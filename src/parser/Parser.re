@@ -21,19 +21,25 @@ let rec parseRParen = (lexer: lexer): lexer => {
 
 // Read list of nodes until we see an RPAREN
 and parseList = (lexer: lexer): (lexer, list(node)) => {
-  let peekedToken = peekNextToken(lexer);
+  let lexer = ref(lexer);
+  let nodes = ref([]);
+  let break = ref(false);
 
-  switch (peekedToken) {
-  | Token.RPAREN =>
-    let lexer = parseRParen(lexer);
-    (lexer, []);
-  | Token.END => raise(SyntaxError("Missing closing right parenthesis"))
-  | _ =>
-    let (lexer, node) = parseNode(lexer);
-    let (lexer, nodes) = parseList(lexer);
-    let nodes: list(node) = [node, ...nodes];
-    (lexer, nodes);
+  while (! break^) {
+    let peekedToken = peekNextToken(lexer^);
+
+    switch (peekedToken) {
+    | Token.RPAREN =>
+      lexer := parseRParen(lexer^);
+      break := true;
+    | _ =>
+      let (nextLexer, node) = parseNode(lexer^);
+      lexer := nextLexer;
+      nodes := List.append(nodes^, [node]);
+    };
   };
+
+  (lexer^, nodes^);
 }
 
 and parseNode = (lexer: lexer): (lexer, node) => {
@@ -53,19 +59,27 @@ and parseNode = (lexer: lexer): (lexer, node) => {
   };
 }
 
-and parseProgram = (lexer: lexer): (lexer, list(node)) => {
-  let peekedToken = peekNextToken(lexer);
-  switch (peekedToken) {
-  | Token.END => (lexer, [])
-  | _ =>
-    let (lexer, node) = parseNode(lexer);
-    let (lexer, followingNodes) = parseProgram(lexer);
-    (lexer, [node, ...followingNodes]);
+and parseProgram = (lexer: lexer): list(node) => {
+  let lexer = ref(lexer);
+  let break = ref(false);
+  let nodes = ref([]);
+
+  while (! break^) {
+    let peekedToken = peekNextToken(lexer^);
+
+    switch (peekedToken) {
+    | Token.END => break := true
+    | _ =>
+      let (newLexer, node) = parseNode(lexer^);
+      nodes := List.append(nodes^, [node]);
+      lexer := newLexer;
+    };
   };
+
+  nodes^;
 }
 
 and parse = (input: string): list(node) => {
   let lexer = newLexer(input);
-  let (_lexer, nodes) = parseProgram(lexer);
-  nodes;
+  parseProgram(lexer);
 };
