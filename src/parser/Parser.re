@@ -65,13 +65,13 @@ and parseNodesUntilRParen = (lexer: lexer): (lexer, list(node)) => {
 }
 
 and parseNode = (lexer: lexer): (lexer, node) => {
-  let originalLexer = lexer;
+  let lexerBeforeToken = lexer;
   let lexer = nextToken(lexer);
   switch (lexer.token) {
   | Token.INT(i) => (lexer, Int(i))
   | Token.STRING(str) => (lexer, String(str))
   | Token.SYMBOL(name) => (lexer, Symbol(name))
-  | Token.LPAREN => parseList(originalLexer)
+  | Token.LPAREN => parseList(lexerBeforeToken)
   | _ =>
     raise(
       SyntaxError(
