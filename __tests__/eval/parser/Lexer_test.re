@@ -6,7 +6,7 @@ describe("nextToken", () => {
   Expect.(
     test("returns the next lexer", () => {
       let lexer = newLexer("123");
-      let (_token, lexer) = nextToken(lexer);
+      let lexer = nextToken(lexer);
       expect(lexer.index) |> toEqual(3);
     })
   );
@@ -15,8 +15,8 @@ describe("nextToken", () => {
     Expect.(
       test("returns an INT token", () => {
         let lexer = newLexer("456");
-        let (token, _lexer) = nextToken(lexer);
-        expect(token) |> toEqual(INT(456));
+        let lexer = nextToken(lexer);
+        expect(lexer.token) |> toEqual(INT(456));
       })
     )
   });
@@ -25,8 +25,8 @@ describe("nextToken", () => {
     Expect.(
       test("skips it", () => {
         let lexer = newLexer("   456");
-        let (token, _lexer) = nextToken(lexer);
-        expect(token) |> toEqual(INT(456));
+        let lexer = nextToken(lexer);
+        expect(lexer.token) |> toEqual(INT(456));
       })
     )
   });
@@ -35,9 +35,9 @@ describe("nextToken", () => {
     Expect.(
       test("returns an END token", () => {
         let lexer = newLexer("4    ");
-        let (_token, lexer) = nextToken(lexer);
-        let (token, _lexer) = nextToken(lexer);
-        expect(token) |> toEqual(END);
+        let lexer = nextToken(lexer);
+        let lexer = nextToken(lexer);
+        expect(lexer.token) |> toEqual(END);
       })
     )
   });
@@ -46,8 +46,8 @@ describe("nextToken", () => {
     Expect.(
       test("returns a STRING token", () => {
         let lexer = newLexer("\"abc\"");
-        let (token, _lexer) = nextToken(lexer);
-        expect(token) |> toEqual(STRING("abc"));
+        let lexer = nextToken(lexer);
+        expect(lexer.token) |> toEqual(STRING("abc"));
       })
     )
   });
@@ -56,8 +56,8 @@ describe("nextToken", () => {
     Expect.(
       test("returns a LPAREN token", () => {
         let lexer = newLexer(" (");
-        let (token, _lexer) = nextToken(lexer);
-        expect(token) |> toEqual(LPAREN);
+        let lexer = nextToken(lexer);
+        expect(lexer.token) |> toEqual(LPAREN);
       })
     )
   });
@@ -66,8 +66,8 @@ describe("nextToken", () => {
     Expect.(
       test("returns a RPAREN token", () => {
         let lexer = newLexer(" )");
-        let (token, _lexer) = nextToken(lexer);
-        expect(token) |> toEqual(RPAREN);
+        let lexer = nextToken(lexer);
+        expect(lexer.token) |> toEqual(RPAREN);
       })
     )
   });
@@ -76,8 +76,8 @@ describe("nextToken", () => {
     Expect.(
       test("returns a SYMBOL token", () => {
         let lexer = newLexer(" begin");
-        let (token, _lexer) = nextToken(lexer);
-        expect(token) |> toEqual(SYMBOL("begin"));
+        let lexer = nextToken(lexer);
+        expect(lexer.token) |> toEqual(SYMBOL("begin"));
       })
     )
   });
@@ -86,8 +86,8 @@ describe("nextToken", () => {
     Expect.(
       test("returns a SYMBOL token", () => {
         let lexer = newLexer("!+:$-");
-        let (token, _lexer) = nextToken(lexer);
-        expect(token) |> toEqual(SYMBOL("!+:$-"));
+        let lexer = nextToken(lexer);
+        expect(lexer.token) |> toEqual(SYMBOL("!+:$-"));
       })
     )
   });

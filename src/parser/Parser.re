@@ -11,11 +11,13 @@ open Lexer;
  */
 
 let rec parseRParen = (lexer: lexer): lexer => {
-  let (token, lexer) = nextToken(lexer);
-  switch (token) {
+  let lexer = nextToken(lexer);
+  switch (lexer.token) {
   | Token.RPAREN => lexer
   | _ =>
-    raise(SyntaxError("Expected ')', got: " ++ Token.stringOfToken(token)))
+    raise(
+      SyntaxError("Expected ')', got: " ++ Token.stringOfToken(lexer.token)),
+    )
   };
 }
 
@@ -43,8 +45,8 @@ and parseList = (lexer: lexer): (lexer, list(node)) => {
 }
 
 and parseNode = (lexer: lexer): (lexer, node) => {
-  let (token, lexer) = nextToken(lexer);
-  switch (token) {
+  let lexer = nextToken(lexer);
+  switch (lexer.token) {
   | Token.INT(i) => (lexer, Int(i))
   | Token.STRING(str) => (lexer, String(str))
   | Token.SYMBOL(name) => (lexer, Symbol(name))
@@ -54,7 +56,9 @@ and parseNode = (lexer: lexer): (lexer, node) => {
     (lexer, node);
   | _ =>
     raise(
-      SyntaxError("Unexpected token, got: " ++ Token.stringOfToken(token)),
+      SyntaxError(
+        "Unexpected token, got: " ++ Token.stringOfToken(lexer.token),
+      ),
     )
   };
 }
