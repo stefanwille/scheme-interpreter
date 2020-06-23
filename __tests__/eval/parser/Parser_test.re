@@ -1,5 +1,5 @@
 open Jest;
-open Node;
+open AST;
 open Parser;
 
 describe("parser", () => {

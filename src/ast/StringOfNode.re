@@ -1,5 +1,5 @@
 open StringUtil;
-open Node;
+open AST;
 
 let rec stringOfNode = (node: node): string =>
   switch (node) {

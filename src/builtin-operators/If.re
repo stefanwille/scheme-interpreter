@@ -1,4 +1,4 @@
-open Node;
+open AST;
 open ArgumentsError;
 open StringOfNode;
 open Eval;

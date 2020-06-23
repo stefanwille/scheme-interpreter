@@ -1,6 +1,6 @@
 open Jest;
 open Environment;
-open Node;
+open AST;
 
 describe("defineVariable()", () => {
   Expect.(
