@@ -5,9 +5,11 @@ open Lexer;
 /*
  Grammar used for this parser:
 
- Program ::=  Node* END;
- Node ::= INT | STRING | SYMBOL | List;
- List ::= LPAREN Node* RPAREN;
+ program ::= node* END;
+ node ::= INT | STRING | SYMBOL | list;
+ list ::= LPAREN node* RPAREN;
+
+ Parser symbols are lowercase, lexer token are capitalized.
  */
 
 let rec parseLParen = (lexer: lexer): lexer => {
