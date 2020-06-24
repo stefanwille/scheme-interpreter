@@ -5,9 +5,9 @@ open Lexer;
 /*
  Grammar used for this parser:
 
- program ::= node* END;
- node ::= INT | STRING | SYMBOL | list;
- list ::= LPAREN node* RPAREN;
+ program ::= expression* END;
+ expression ::= INT | STRING | SYMBOL | list;
+ list ::= LPAREN expression* RPAREN;
 
  Parser symbols are lowercase, lexer token are capitalized.
  */
@@ -36,7 +36,7 @@ and parseRParen = (lexer: lexer): lexer => {
 
 and parseList = (lexer: lexer): (lexer, node) => {
   let lexer = parseLParen(lexer);
-  let (lexer, nodes) = parseNodesUntilRParen(lexer);
+  let (lexer, nodes) = parseExpressionsUntilRParen(lexer);
   let lexer = parseRParen(lexer);
 
   let node = List(nodes);
@@ -44,7 +44,7 @@ and parseList = (lexer: lexer): (lexer, node) => {
 }
 
 // Parses nodes until we meet an RPAREN
-and parseNodesUntilRParen = (lexer: lexer): (lexer, list(node)) => {
+and parseExpressionsUntilRParen = (lexer: lexer): (lexer, list(node)) => {
   let lexer = ref(lexer);
   let nodes = ref([]);
   let break = ref(false);
@@ -55,7 +55,7 @@ and parseNodesUntilRParen = (lexer: lexer): (lexer, list(node)) => {
     switch (peekedToken) {
     | Token.RPAREN => break := true
     | _ =>
-      let (nextLexer, node) = parseNode(lexer^);
+      let (nextLexer, node) = parseExpression(lexer^);
       lexer := nextLexer;
       nodes := List.append(nodes^, [node]);
     };
@@ -64,7 +64,7 @@ and parseNodesUntilRParen = (lexer: lexer): (lexer, list(node)) => {
   (lexer^, nodes^);
 }
 
-and parseNode = (lexer: lexer): (lexer, node) => {
+and parseExpression = (lexer: lexer): (lexer, node) => {
   let lexerBeforeToken = lexer;
   let lexer = nextToken(lexer);
   switch (lexer.token) {
@@ -92,7 +92,7 @@ and parseProgram = (lexer: lexer): list(node) => {
     switch (peekedToken) {
     | Token.END => break := true
     | _ =>
-      let (newLexer, node) = parseNode(lexer^);
+      let (newLexer, node) = parseExpression(lexer^);
       nodes := List.append(nodes^, [node]);
       lexer := newLexer;
     };
