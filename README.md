@@ -28,9 +28,9 @@ yarn test
 ## API
 
 ```reason
-let interpreter = Interpreter.newInterpreter();
+let interpreter = SchemeInterpreter.newInterpreter();
 let result: string =
-  Interpreter.run(interpreter, "(begin (set! n 10) (+ n 2))");
+  SchemeInterpreter.run(interpreter, "(begin (set! n 10) (+ n 2))");
 Js.log(result);
 # => 12
 ```

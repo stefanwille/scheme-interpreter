@@ -1,19 +1,19 @@
 open Jest;
 
-describe("Interpreter", () => {
+describe("SchemeInterpreter", () => {
   Expect.(
     test("executes the given code", () => {
-      let interpreter = Interpreter.newInterpreter();
-      let result: string = Interpreter.run(interpreter, "(+ 1 2)");
+      let interpreter = SchemeInterpreter.newInterpreter();
+      let result: string = SchemeInterpreter.run(interpreter, "(+ 1 2)");
       expect(result) |> toEqual("3");
     })
   );
 
   Expect.(
     test("executes nested expressions", () => {
-      let interpreter = Interpreter.newInterpreter();
+      let interpreter = SchemeInterpreter.newInterpreter();
       let result: string =
-        Interpreter.run(
+        SchemeInterpreter.run(
           interpreter,
           "(begin (set! counter 10) (+ counter counter))",
         );
@@ -23,9 +23,9 @@ describe("Interpreter", () => {
 
   Expect.(
     test("executes multiple expressions in the same environment", () => {
-      let interpreter = Interpreter.newInterpreter();
+      let interpreter = SchemeInterpreter.newInterpreter();
       let result: string =
-        Interpreter.run(interpreter, "(set! counter 10) counter");
+        SchemeInterpreter.run(interpreter, "(set! counter 10) counter");
       expect(result) |> toEqual("\"OK\", 10");
     })
   );
