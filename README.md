@@ -16,3 +16,21 @@ yarn build
 yarn start
 
 ```
+
+## Test
+
+```bash
+yarn test
+
+```
+
+
+## API
+
+```reason
+let interpreter = Interpreter.newInterpreter();
+let result: string =
+  Interpreter.run(interpreter, "(begin (set! n 10) (+ n 2))");
+Js.log(result);
+# => 12
+```
